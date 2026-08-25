@@ -50,6 +50,124 @@ Non-obvious assumptions, fragile areas, manual steps, and what the next AI mode/
 
 ## Entries
 
+## TASK-20260825-07 — Publish Approved Contact and Resume Destinations
+
+- **Timestamp:** 2026-08-25T23:43:36+07:00
+- **Status:** Complete
+- **Request:** Add the supplied public email, LinkedIn, GitHub profile, and CV PDF to the Phase 03 portfolio surfaces.
+- **Scope:** Shared header/footer, Contact route, static-page and shell tests, public CV asset validation, authoritative product documents, and continuity logs.
+
+### Summary
+
+Published all four user-approved destinations. The header now includes a responsive Resume CTA that opens the repository-controlled two-page PDF without creating `/resume`; Contact exposes Email, LinkedIn, GitHub, and Resume; and the footer exposes the approved personal GitHub and LinkedIn profiles.
+
+### What Changed
+
+- Added a Resume CTA in `components/site-header.tsx` targeting `/CV_YERIKHO_WILLIAM_TASILIMA_public.pdf` with accessible PDF/new-tab naming.
+- Reworked the mobile header so visual and keyboard order remain aligned: brand, four-item primary navigation, then Resume. Desktop remains a single 65px row.
+- Replaced temporary project-review links on `/contact` with the approved email, LinkedIn, personal GitHub, and Resume destinations.
+- Replaced the project-repository footer link with approved personal GitHub and LinkedIn links.
+- Updated shell and route tests for every exact destination.
+- Superseded the unavailable-CV decision in `docs/phase-01-decision-packet.md`, updated `docs/project-brief.md`, reconciled the ignored local Phase 03 plan, and resolved DEBT-20260825-05.
+
+### Key Decisions
+
+- **Decision:** Link the public PDF directly rather than creating `/resume`.
+  - **Reasoning:** This matches the supplied asset, the approved route boundary, and the intended new-tab document behavior without adding a new route.
+  - **ADR:** Not required.
+- **Decision:** Keep email in the current tab via `mailto:` while profile and PDF links use `_blank` with `noopener noreferrer` and explicit accessible naming.
+  - **Reasoning:** The behavior matches each destination type and avoids falsely announcing a new tab for email.
+  - **ADR:** Not required.
+
+### Validation
+
+- `file public/CV_YERIKHO_WILLIAM_TASILIMA_public.pdf` — Passed; valid PDF 1.4 with two pages.
+- Quick Look first-page preview and Chrome PDF viewer inspection — Passed; both pages and the page-two footer are legible with no visible clipping or overlap.
+- Local PDF HTTP check — Passed; `HTTP 200`, `Content-Type: application/pdf`, and `Content-Length: 6281`.
+- Personal GitHub HTTP check — Passed; `HTTP 200`.
+- LinkedIn automated HTTP check — Limited; returned LinkedIn anti-bot `HTTP 999`, while the exact user-approved URL and rendered href contract passed.
+- `npm run lint` — Passed.
+- `npm run typecheck` — Passed.
+- `npm test` — Passed; 4 files and 12 tests.
+- `npx next build --webpack` — Passed after the final responsive change; `/`, `/about`, and `/contact` remain statically generated.
+- Browser checks at 390×844 and 1440×900 — Passed; no horizontal overflow, Contact has one H1 and correct active state, mobile header height is 133px, desktop header height is 65px, and DOM/visual link order is aligned.
+
+### Current State
+
+The approved public identity destinations are fully wired and tested. `/resume` remains absent; the Resume CTA and Contact entry serve the static PDF directly. Phase 04's `/projects` route remains the only planned navigation gap.
+
+### Handoff Notes
+
+Keep the current PDF filename stable unless every corresponding href, test, and decision record is updated together. Do not copy additional CV metrics into site copy without a separate evidence/copy review.
+
+### Open Threads
+
+- Phase 04 must resolve the existing `/projects` navigation gap tracked by DEBT-20260825-06.
+
+### Related Logs
+
+- **Errors:** ERR-20260825-15, ERR-20260825-16, ERR-20260825-17, ERR-20260825-18, ERR-20260825-19.
+- **Tech debt:** DEBT-20260825-05 (resolved), DEBT-20260825-06.
+
+## TASK-20260825-06 — Implement Phase 03 Layout Shell and Static Pages
+
+- **Timestamp:** 2026-08-25T20:54:57+07:00
+- **Status:** Complete
+- **Request:** Implement `docs/plannings/phase-03-layout-shell-static-pages.md`.
+- **Scope:** Root shell, responsive navigation, footer, Home, About, Contact, metadata, accessibility states, route/component tests, Phase 03 planning reconciliation, and continuity logs.
+
+### Summary
+
+Implemented the Phase 03 shared shell and three static routes using only approved public evidence. The result is a responsive, dark-first, evidence-led portfolio surface with a sticky four-item navigation, skip link, active states, verified OhMyPos links and exact metric wording, and no Resume/CV route or CTA.
+
+### What Changed
+
+- Rebuilt `app/layout.tsx` around a shared sticky header, keyboard-visible skip link, content region, footer, metadata title template, and existing Geist theme.
+- Replaced the foundation smoke page with an evidence-led Home route and approved OhMyPos concurrency result presented as a scannable stat ledger.
+- Added `/about` and `/contact` as statically rendered routes; both avoid unsupported biography/contact claims and use only evidence already approved for publication.
+- Added shared page-container, navigation, header, and footer components. The only client boundary is active-route detection in `PrimaryNav`; mobile navigation is CSS-responsive.
+- Added five route smoke tests and two shell/navigation tests, bringing the suite to 12 tests.
+- Reconciled the Phase 03 plan with the Phase 01 `Unavailable` CV decision and corrected the stale Phase 02 status in the project brief.
+
+### Key Decisions
+
+- **Decision:** Treat the Phase 01 packet as authoritative and omit Resume/CV, direct email, and LinkedIn destinations that are not approved.
+  - **Reasoning:** This implements the largest safe Phase 03 surface without fabricating personal details or rendering broken placeholder links.
+  - **ADR:** Not required.
+- **Decision:** Use a CSS-responsive four-item navigation with one narrow active-route client component.
+  - **Reasoning:** Four short labels remain usable without menu state, reducing interaction complexity while preserving route awareness and keyboard access.
+  - **ADR:** Not required.
+
+### Validation
+
+- `npm run lint` — Passed.
+- `npm run typecheck` — Passed.
+- `npm test` — Passed; 4 files and 12 tests.
+- `npm run build` — Environment-blocked by the known Turbopack internal port-binding restriction tracked in ERR-20260825-08.
+- `npx next build --webpack` — Passed; compiled, type-checked, and statically generated `/`, `/about`, and `/contact` with no `/resume` route.
+- Browser checks at 390×844, 768×1024, and 1440×900 — Passed; no horizontal overflow, correct active route, one H1 per route, sticky header, exact approved metric copy, and valid external-link attributes.
+- Keyboard and accessibility inspection — Passed; skip link is first in traversal, visible when focused, targets `#main-content`, and uses the approved 3px technical-blue focus indicator. Reduced-motion CSS is present.
+- Browser console — No application-origin warnings or errors; the recurring Chrome-extension error remains tracked in ERR-20260825-11.
+- `/resume` direct browser request — Passed; returned the Next.js 404 surface and no rendered link points to `/resume`.
+
+### Current State
+
+Phase 03 is complete within the currently approved publication boundary. Home, About, and Contact render through the shared shell. Direct email, LinkedIn, CV, `/resume`, and project-index content remain absent; `/projects` is the approved next-phase navigation destination and will return 404 until Phase 04 implements it.
+
+### Handoff Notes
+
+Do not replace the project-oriented Contact links with guessed personal destinations. When approved email, LinkedIn, personal GitHub, or CV destinations become available, update Contact/footer and revisit the CV omission. Phase 04 should implement `/projects` without changing the current navigation URL.
+
+### Open Threads
+
+- Approved personal email, LinkedIn, personal GitHub, and CV destinations remain future content inputs.
+- Phase 04 must resolve the intentional `/projects` navigation gap.
+
+### Related Logs
+
+- **Errors:** ERR-20260825-08, ERR-20260825-11, ERR-20260825-13, ERR-20260825-14.
+- **Tech debt:** DEBT-20260825-03, DEBT-20260825-04, DEBT-20260825-05, DEBT-20260825-06.
+
 ## TASK-20260825-05 — Implement Phase 02 Foundation Scaffold
 
 - **Timestamp:** 2026-08-25T20:26:29+07:00

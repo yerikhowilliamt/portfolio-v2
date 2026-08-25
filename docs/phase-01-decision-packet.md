@@ -32,9 +32,22 @@ The selected family will be used consistently for primary actions, links, highli
 
 ## 2. Public CV Destination
 
-The CV destination is confirmed as `Unavailable`. No Resume/CV CTA may be rendered with a guessed or placeholder destination. The requested new-tab behavior is reserved for a future approved external destination but has no effect while the destination is unavailable. Creating a `/resume` route remains out of scope unless separately approved.
+The CV destination is now confirmed as the repository-controlled public file `/CV_YERIKHO_WILLIAM_TASILIMA_public.pdf`, sourced from `public/CV_YERIKHO_WILLIAM_TASILIMA_public.pdf`. Resume/CV links may target this exact file and must open in a new tab with accessible PDF naming. Creating a `/resume` route remains out of scope unless separately approved.
 
-**Decision:** `Approved — Unavailable` on 2026-08-25.
+**Decision:** Initially approved as `Unavailable`, then superseded by `Approved — Available` on 2026-08-25 when the user supplied the public PDF.
+
+## 2A. Public Contact Destinations
+
+The user approved the following public contact destinations on 2026-08-25:
+
+| Channel | Approved destination | Public wording |
+|---|---|---|
+| Email | `mailto:yerikhowilliamt@gmail.com` | `Email` |
+| LinkedIn | `https://www.linkedin.com/in/yerikhowilliamt` | `LinkedIn` |
+| GitHub | `https://github.com/yerikhowilliamt` | `GitHub` |
+| Resume | `/CV_YERIKHO_WILLIAM_TASILIMA_public.pdf` | `Resume` |
+
+External profile links and the PDF open in a new tab. Email uses a direct `mailto:` destination.
 
 ## 3. OhMyPos Publication Inventory
 
@@ -77,7 +90,10 @@ The unmatched trailing quotation mark in the submitted reply was treated as a fo
 | Item | Status | Recorded outcome |
 |---|---|---|
 | Accent family and tokens | Approved | Technical blue; `#60a5fa`, `#93c5fd`, `#3b82f6` |
-| CV destination | Approved | Unavailable; omit Resume/CV CTA |
+| CV destination | Approved | `/CV_YERIKHO_WILLIAM_TASILIMA_public.pdf`; render Resume CTA and open in a new tab |
+| Email destination | Approved | `mailto:yerikhowilliamt@gmail.com` |
+| LinkedIn destination | Approved | `https://www.linkedin.com/in/yerikhowilliamt` |
+| Personal GitHub destination | Approved | `https://github.com/yerikhowilliamt` |
 | OhMyPos live demo | Approved | Public and verified |
 | OhMyPos repository | Approved | Public and verified |
 | OhMyPos PRD | Approved | Public and verified |
