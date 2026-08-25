@@ -50,6 +50,62 @@ Non-obvious assumptions, fragile areas, manual steps, and what the next AI mode/
 
 ## Entries
 
+## TASK-20260826-04 — Switch Portfolio Typography to Plus Jakarta Sans and JetBrains Mono
+
+- **Timestamp:** 2026-08-26T00:54:57+07:00
+- **Status:** Complete
+- **Request:** Use Plus Jakarta Sans for the portfolio and JetBrains Mono for numeric content.
+- **Scope:** Global Next.js font loading, Tailwind font tokens, explicit footer numeric styling, typography source of truth, automated validation, and responsive browser QA.
+
+### Summary
+
+Replaced the global Geist pairing with Plus Jakarta Sans for body and headings and JetBrains Mono for numeric, benchmark, technical-tag, and code contexts. The existing `font-sans` and `font-mono` contracts remain intact, so all current routes and shadcn compositions inherit the new typography without call-site duplication.
+
+### What Changed
+
+- Replaced the `Geist` and `Geist_Mono` `next/font/google` loaders with `Plus_Jakarta_Sans` and `JetBrains_Mono` in `app/layout.tsx`.
+- Repointed the centralized Tailwind `--font-sans` and `--font-mono` tokens to the new generated font variables.
+- Applied the numeric font explicitly to the footer year; existing stats, benchmark values, technical labels, badges, and code already consume `font-mono`.
+- Updated `docs/project-brief.md` so Plus Jakarta Sans plus JetBrains Mono is the current typography source of truth.
+
+### Key Decisions
+
+- **Decision:** Preserve the semantic `font-sans` and `font-mono` utility contracts while replacing their underlying families.
+  - **Reasoning:** This updates the whole interface centrally, keeps shadcn and project compositions consistent, and avoids scattered font-family overrides.
+  - **ADR:** Not required.
+- **Decision:** Continue using JetBrains Mono for technical text and code in addition to numeric displays.
+  - **Reasoning:** The user selected JetBrains Mono for numeric content, and the existing monospace contract intentionally groups benchmark values, technical tags, and code under one legible technical family.
+  - **ADR:** Not required.
+
+### Validation
+
+- UI typography guidance search — Plus Jakarta Sans verified as a modern, professional portfolio/SaaS family; the requested pairing was applied without changing layout or color direction.
+- `npm run lint` — Passed.
+- `npm run typecheck` — Passed.
+- `npm test` — Passed; 5 files and 16 tests.
+- `npx next build --webpack` — Passed with network access; all static routes and the generated project detail built successfully.
+- Browser computed-style checks at 1440×900 and 390×844 — Passed; body and headings resolve to Plus Jakarta Sans, numeric stats and the footer year resolve to JetBrains Mono, and neither viewport has horizontal overflow.
+- Desktop and mobile visual inspection — Passed; typography remains legible and the existing responsive hierarchy is preserved.
+- Browser console — No application-origin warning or error; only the known extension-origin error from ERR-20260825-11 recurred.
+- `git diff --check` — Passed.
+
+### Current State
+
+All current routes now inherit Plus Jakarta Sans through `font-sans`; numeric and other established technical monospace contexts inherit JetBrains Mono through `font-mono`. No dependency, lockfile, routing, content-schema, or public-copy change was introduced.
+
+### Handoff Notes
+
+Use `font-sans` for normal interface and editorial text. Use `font-mono` for explicit numeric displays, benchmarks, technical tags, and code so the centralized pairing remains consistent.
+
+### Open Threads
+
+- None.
+
+### Related Logs
+
+- **Errors:** ERR-20260826-06 (resolved), ERR-20260825-08 (workaround), ERR-20260825-11.
+- **Tech debt:** None.
+
 ## TASK-20260826-03 — Migrate Site-Wide Visual and Action Primitives to shadcn
 
 - **Timestamp:** 2026-08-26T00:40:56+07:00

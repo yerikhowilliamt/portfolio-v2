@@ -8,7 +8,9 @@ export function SiteFooter() {
       <Separator />
       <footer>
         <PageContainer className="flex flex-col gap-4 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 Technical Portfolio.</p>
+          <p>
+            © <span className="font-mono">2026</span> Technical Portfolio.
+          </p>
           <nav aria-label="Footer navigation">
             <ul className="flex items-center gap-1">
               <li>

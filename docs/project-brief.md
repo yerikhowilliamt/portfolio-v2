@@ -84,7 +84,7 @@ Setiap halaman `/projects/[slug]` mengikuti urutan berikut:
 | UI components | **shadcn/ui** | Primitive accessible yang dapat dikomposisikan tanpa ketergantungan pada visual library tertutup. |
 | Styling | **Tailwind CSS** | Menjaga konsistensi spacing, typography, responsive layout, dan dark-first theme melalui utility dan token terpusat. |
 | Case-study content | **MDX di `content/projects/*.mdx`** | Mempertahankan authoring berbasis Markdown sekaligus memungkinkan komponen seperti stat block dan code sample. |
-| Typography | **Geist Sans + monospace** | Geist untuk body/heading; monospace untuk angka, benchmark, tag teknis, dan kode. |
+| Typography | **Plus Jakarta Sans + JetBrains Mono** | Plus Jakarta Sans untuk body/heading; JetBrains Mono untuk angka, benchmark, tag teknis, dan kode. |
 | Hosting | **Vercel** | Integrasi native dengan Next.js dan deployment berbasis Git. |
 | Public language | **English only** | Selaras dengan target hiring team dan proses interview Eropa. |
 

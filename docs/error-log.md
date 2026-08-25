@@ -46,6 +46,44 @@ Conditions under which the error could recur, or `None known`.
 
 ## Entries
 
+## ERR-20260826-06 — Saved Browser Tab Was Stale During Typography QA
+
+- **Timestamp:** 2026-08-26T00:54:57+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260826-04
+- **Area:** Local browser validation session.
+
+### What Happened
+
+The first typography QA evaluation returned `No tab with id: 1685144231` because the tab retained from the prior task was no longer open.
+
+### Reproduction
+
+1. Reuse the prior task's saved tab binding after that browser tab has been closed.
+2. Attempt navigation or evaluation and observe the stale-tab error.
+
+### Root Cause
+
+The persistent browser binding remained valid, but its previously selected tab had been closed between validation tasks.
+
+### Resolution or Workaround
+
+Listed the live tabs, confirmed none remained, opened a fresh tab from the existing browser binding, and completed desktop/mobile typography QA successfully.
+
+### Why This Approach
+
+Refreshing only the stale tab preserves the valid browser connection and avoids unnecessary session reinitialization.
+
+### Residual Risk
+
+Browser tabs may be closed between future tasks and should be reacquired when stale.
+
+### Related Files and Logs
+
+- **Files:** None.
+- **Tech debt:** None.
+
 ## ERR-20260826-05 — Browser QA Used an Unsupported Wait Helper
 
 - **Timestamp:** 2026-08-26T00:40:56+07:00
@@ -549,7 +587,7 @@ The incompatibility is resolved. The compatible version's maintenance status rem
 - **Timestamp:** 2026-08-25T20:40:27+07:00
 - **Status:** Workaround
 - **Severity:** Low
-- **Task:** TASK-20260825-05, TASK-20260825-06, TASK-20260826-01, TASK-20260826-02, TASK-20260826-03
+- **Task:** TASK-20260825-05, TASK-20260825-06, TASK-20260826-01, TASK-20260826-02, TASK-20260826-03, TASK-20260826-04
 - **Area:** Browser console validation.
 
 ### What Happened
@@ -563,7 +601,7 @@ Desktop and mobile browser checks captured `TypeError: Cannot read properties of
 
 ### Root Cause
 
-A Chrome extension content script failed independently of the localhost application. The error URL is extension-owned, and no application-origin warning or error was captured. It recurred across the Phase 04 project index, detail, 404, shadcn-refactor, and full-site primitive-migration browser checks on 2026-08-26; every captured instance remained extension-owned.
+A Chrome extension content script failed independently of the localhost application. The error URL is extension-owned, and no application-origin warning or error was captured. It recurred across the Phase 04 project index, detail, 404, shadcn-refactor, full-site primitive-migration, and typography browser checks on 2026-08-26; every captured instance remained extension-owned.
 
 ### Resolution or Workaround
 
@@ -663,12 +701,12 @@ None known while `agentRules: false` remains configured.
 - **Timestamp:** 2026-08-25T20:40:27+07:00
 - **Status:** Workaround
 - **Severity:** Low
-- **Task:** TASK-20260825-05, TASK-20260825-06
+- **Task:** TASK-20260825-05, TASK-20260825-06, TASK-20260826-04
 - **Area:** Next.js build and local development server validation.
 
 ### What Happened
 
-The sandboxed production build could not fetch Geist from Google Fonts. A network-enabled Turbopack build then panicked because an internal process could not bind a port (`Operation not permitted`). The sandboxed dev server hit the same `listen EPERM` restriction on port 3000.
+The sandboxed production build could not fetch Geist from Google Fonts. A network-enabled Turbopack build then panicked because an internal process could not bind a port (`Operation not permitted`). The sandboxed dev server hit the same `listen EPERM` restriction on port 3000. The same sandbox DNS restriction recurred in TASK-20260826-04 while validating Plus Jakarta Sans and JetBrains Mono.
 
 ### Reproduction
 
@@ -682,7 +720,7 @@ The managed execution environment restricts outbound font requests and process p
 
 ### Resolution or Workaround
 
-Ran `npx next build --webpack`; it compiled, type-checked, generated all static pages, and completed successfully in TASK-20260825-05 and again in TASK-20260825-06. Started the dev server with approved elevated port access and completed browser validation for both tasks.
+Ran `npx next build --webpack`; it compiled, type-checked, generated all static pages, and completed successfully in TASK-20260825-05 and again in TASK-20260825-06. In TASK-20260826-04, reran the Webpack build with approved network access; both requested fonts loaded and every route built successfully. Started the dev server with approved elevated port access and completed browser validation for the applicable tasks.
 
 ### Why This Approach
 
