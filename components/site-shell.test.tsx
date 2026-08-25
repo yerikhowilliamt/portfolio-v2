@@ -17,7 +17,7 @@ describe("shared site shell", () => {
     usePathname.mockReturnValue("/");
   });
 
-  it("renders the four approved primary navigation items without a Resume CTA", () => {
+  it("renders the four primary navigation items and approved Resume CTA", () => {
     render(<SiteHeader />);
 
     const navigation = screen.getByRole("navigation", { name: "Primary navigation" });
@@ -25,7 +25,10 @@ describe("shared site shell", () => {
     expect(navigation).toHaveTextContent("Projects");
     expect(navigation).toHaveTextContent("About");
     expect(navigation).toHaveTextContent("Contact");
-    expect(screen.queryByRole("link", { name: /resume|cv/i })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /resume/i })).toHaveAttribute(
+      "href",
+      "/CV_YERIKHO_WILLIAM_TASILIMA_public.pdf",
+    );
   });
 
   it("marks the current route and preserves approved destinations", () => {
@@ -36,9 +39,13 @@ describe("shared site shell", () => {
     unmount();
 
     render(<SiteFooter />);
-    expect(screen.getByRole("link", { name: /GitHub \/ OhMyPos/ })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /GitHub/ })).toHaveAttribute(
       "href",
-      "https://github.com/yerikhowilliamt/ohmypos",
+      "https://github.com/yerikhowilliamt",
+    );
+    expect(screen.getByRole("link", { name: /LinkedIn/ })).toHaveAttribute(
+      "href",
+      "https://www.linkedin.com/in/yerikhowilliamt",
     );
   });
 });

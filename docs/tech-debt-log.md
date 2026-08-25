@@ -89,8 +89,8 @@ Not resolved; scheduled by the approved phase plan.
 ## DEBT-20260825-05 — Personal Contact Destinations Are Not Approved
 
 - **First recorded:** 2026-08-25T21:06:50+07:00
-- **Last updated:** 2026-08-25T21:06:50+07:00
-- **Status:** Open
+- **Last updated:** 2026-08-25T23:43:36+07:00
+- **Status:** Resolved
 - **Priority:** Medium
 - **Area:** Contact route and shared footer content.
 - **Introduced by:** Pre-existing content gap
@@ -117,12 +117,12 @@ Receipt of verified personal contact or CV destinations.
 
 ### Resolution
 
-Not resolved.
+Resolved after the user supplied and approved the public email, LinkedIn, personal GitHub, and two-page CV PDF. TASK-20260825-07 added these exact destinations to Contact, footer, and the Resume CTA with tests and accessible link behavior.
 
 ### Related Logs
 
-- **Tasks:** TASK-20260825-06
-- **Errors:** None.
+- **Tasks:** TASK-20260825-06, TASK-20260825-07
+- **Errors:** ERR-20260825-15.
 - **ADR:** Not required.
 
 ## DEBT-20260825-04 — Project Brief Retained a Stale Phase 02 Block
@@ -167,7 +167,7 @@ Resolved in TASK-20260825-06 by updating the brief to record Phase 02 completion
 ## DEBT-20260825-03 — Phase 03 Plan Conflicts with Approved CV State
 
 - **First recorded:** 2026-08-25T20:54:57+07:00
-- **Last updated:** 2026-08-25T21:06:50+07:00
+- **Last updated:** 2026-08-25T23:43:36+07:00
 - **Status:** Resolved
 - **Priority:** High
 - **Area:** `docs/plannings/phase-03-layout-shell-static-pages.md` product acceptance criteria.
@@ -195,11 +195,11 @@ Whenever a public CV destination is approved.
 
 ### Resolution
 
-Resolved in TASK-20260825-06. The Phase 03 summary, scope, risk, implementation steps, tests, and definition of done now explicitly require omission while the CV destination remains `Unavailable`; `/resume` browser verification returns 404.
+Resolved in TASK-20260825-06 by aligning the plan to the then-current unavailable state. When the user later supplied an approved public PDF in TASK-20260825-07, the same plan and product documents were updated to require the exact PDF CTA while preserving `/resume` as a 404.
 
 ### Related Logs
 
-- **Tasks:** TASK-20260825-06
+- **Tasks:** TASK-20260825-06, TASK-20260825-07
 - **Errors:** None.
 - **ADR:** Not required.
 

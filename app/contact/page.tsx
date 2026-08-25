@@ -4,24 +4,33 @@ import { PageContainer } from "@/components/page-container";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Verified public destinations for reviewing the portfolio's current technical work.",
+  description: "Public email, professional profiles, and resume for Yerikho William Tasilima.",
 };
 
 const publicDestinations = [
   {
-    label: "Source repository",
-    description: "Inspect the OhMyPos implementation and repository history.",
-    href: "https://github.com/yerikhowilliamt/ohmypos",
+    label: "Email",
+    description: "Send a direct message about engineering roles or technical collaboration.",
+    href: "mailto:yerikhowilliamt@gmail.com",
+    newTab: false,
   },
   {
-    label: "Live demo",
-    description: "Open the public OhMyPos application entry point.",
-    href: "https://ohmypos.vercel.app",
+    label: "LinkedIn",
+    description: "View the public professional profile and employment history.",
+    href: "https://www.linkedin.com/in/yerikhowilliamt",
+    newTab: true,
   },
   {
-    label: "Architecture decisions",
-    description: "Review recorded technical decisions and their trade-offs.",
-    href: "https://github.com/yerikhowilliamt/ohmypos/blob/main/docs/02%20-%20ADR.md",
+    label: "GitHub",
+    description: "Inspect public repositories and implementation history.",
+    href: "https://github.com/yerikhowilliamt",
+    newTab: true,
+  },
+  {
+    label: "Resume",
+    description: "Open the current public CV as a two-page PDF.",
+    href: "/CV_YERIKHO_WILLIAM_TASILIMA_public.pdf",
+    newTab: true,
   },
 ] as const;
 
@@ -38,8 +47,8 @@ export default function ContactPage() {
               Start with the work.
             </h1>
             <p className="leading-7 text-muted-foreground">
-              Direct email, LinkedIn, and CV destinations are not published on this site yet. The
-              verified project surfaces below remain available for technical review.
+              For engineering opportunities, technical interviews, or project discussions, use any
+              of the verified public channels below.
             </p>
           </header>
 
@@ -51,9 +60,13 @@ export default function ContactPage() {
               <a
                 key={destination.href}
                 href={destination.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`${destination.label} (opens in a new tab)`}
+                target={destination.newTab ? "_blank" : undefined}
+                rel={destination.newTab ? "noopener noreferrer" : undefined}
+                aria-label={
+                  destination.newTab
+                    ? `${destination.label} (opens in a new tab)`
+                    : destination.label
+                }
                 className="group grid gap-3 border p-5 transition-colors hover:border-primary hover:bg-card sm:grid-cols-[3rem_1fr_auto] sm:items-center"
               >
                 <span className="font-mono text-xs text-primary">0{index + 1}</span>
@@ -64,7 +77,7 @@ export default function ContactPage() {
                   </span>
                 </span>
                 <span aria-hidden="true" className="font-mono text-sm text-muted-foreground group-hover:text-primary">
-                  ↗
+                  {destination.newTab ? "↗" : "→"}
                 </span>
               </a>
             ))}

@@ -51,8 +51,8 @@ Dalam pemindaian kurang dari satu menit, pengunjung harus dapat menemukan:
 ### Navigasi
 
 - Header sticky berisi Home, Projects, About, dan Contact.
-- CTA Resume/CV hanya ditampilkan setelah file atau URL publik tersedia dan disetujui. Saat ini destinasi CV berstatus `Unavailable`, sehingga CTA harus dihilangkan.
-- Jika destinasi eksternal disetujui kemudian, buka di tab baru. Route `/resume` tetap memerlukan persetujuan terpisah.
+- CTA Resume/CV menggunakan file publik `/CV_YERIKHO_WILLIAM_TASILIMA_public.pdf` dan dibuka di tab baru dengan accessible PDF naming.
+- Route `/resume` tetap memerlukan persetujuan terpisah dan tidak dibuat untuk file CV ini.
 - Footer berisi GitHub, LinkedIn, dan copyright.
 
 ### Project List
@@ -118,6 +118,13 @@ Referensi karakter visual: produk developer tools seperti Linear, Vercel, dan Ra
 
 ## 7. Evidence dan Acceptance Criteria
 
+### Destinasi Kontak Publik yang Disetujui
+
+- **Email:** `mailto:yerikhowilliamt@gmail.com`
+- **LinkedIn:** `https://www.linkedin.com/in/yerikhowilliamt`
+- **GitHub:** `https://github.com/yerikhowilliamt`
+- **CV:** `/CV_YERIKHO_WILLIAM_TASILIMA_public.pdf`
+
 ### OhMyPos — Evidence yang Disetujui
 
 - **Live demo:** `https://ohmypos.vercel.app`
@@ -153,6 +160,6 @@ Sebuah halaman atau case study dianggap siap hanya jika:
 
 Keputusan Phase 01 untuk accent, status CV, tautan publik OhMyPos, fallback hook, dan metric concurrency pertama telah diselesaikan pada 2026-08-25 dan dicatat di Phase 01 decision packet.
 
-- Belum ada CV publik. Jangan menampilkan CTA Resume/CV atau membuat route `/resume` sampai destinasi baru disetujui.
+- CV publik, email, LinkedIn, dan personal GitHub telah disetujui pada 2026-08-25. Tampilkan hanya destinasi persis yang tercatat di atas; route `/resume` tetap tidak disetujui.
 - Metric tambahan untuk OhMyPos atau project lain tetap memerlukan evidence contract dan persetujuan copy secara terpisah.
 - **Phase 02 selesai pada 2026-08-25.** Foundation Next.js, theme tokens, shadcn-compatible primitive, dan controlled MDX pipeline telah tervalidasi sebelum Phase 03 dimulai.

@@ -26,14 +26,25 @@ describe("Phase 03 static routes", () => {
     expect(screen.getByText("Data integrity")).toBeInTheDocument();
   });
 
-  it("renders only verified public destinations on Contact", () => {
+  it("renders the approved public contact destinations", () => {
     render(<ContactPage />);
 
     expect(screen.getByRole("heading", { level: 1, name: "Start with the work." })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Source repository/ })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Email" })).toHaveAttribute(
       "href",
-      "https://github.com/yerikhowilliamt/ohmypos",
+      "mailto:yerikhowilliamt@gmail.com",
     );
-    expect(screen.queryByRole("link", { name: /email|linkedin|resume|cv/i })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /LinkedIn/ })).toHaveAttribute(
+      "href",
+      "https://www.linkedin.com/in/yerikhowilliamt",
+    );
+    expect(screen.getByRole("link", { name: /GitHub/ })).toHaveAttribute(
+      "href",
+      "https://github.com/yerikhowilliamt",
+    );
+    expect(screen.getByRole("link", { name: /Resume/ })).toHaveAttribute(
+      "href",
+      "/CV_YERIKHO_WILLIAM_TASILIMA_public.pdf",
+    );
   });
 });
