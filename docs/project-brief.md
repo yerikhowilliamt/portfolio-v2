@@ -155,4 +155,4 @@ Keputusan Phase 01 untuk accent, status CV, tautan publik OhMyPos, fallback hook
 
 - Belum ada CV publik. Jangan menampilkan CTA Resume/CV atau membuat route `/resume` sampai destinasi baru disetujui.
 - Metric tambahan untuk OhMyPos atau project lain tetap memerlukan evidence contract dan persetujuan copy secara terpisah.
-- **Phase 02 belum diotorisasi.** Pengguna secara eksplisit memilih untuk tidak melanjutkan setelah pencatatan keputusan Phase 01.
+- **Phase 02 selesai pada 2026-08-25.** Foundation Next.js, theme tokens, shadcn-compatible primitive, dan controlled MDX pipeline telah tervalidasi sebelum Phase 03 dimulai.

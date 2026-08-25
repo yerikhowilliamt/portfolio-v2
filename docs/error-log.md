@@ -46,6 +46,82 @@ Conditions under which the error could recur, or `None known`.
 
 ## Entries
 
+## ERR-20260825-14 — Browser Evaluator Rejected DOM Constructor Check
+
+- **Timestamp:** 2026-08-25T21:04:37+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260825-06
+- **Area:** Desktop keyboard-focus browser validation.
+
+### What Happened
+
+The first keyboard-state evaluator failed with `TypeError: Right-hand side of 'instanceof' is not an object` while checking `document.activeElement instanceof HTMLElement`.
+
+### Reproduction
+
+1. Focus the skip link with keyboard Tab in the connected browser.
+2. Evaluate the active element using the unavailable `HTMLElement` constructor in the isolated page evaluator.
+
+### Root Cause
+
+The evaluator did not expose `HTMLElement` as an object in that execution boundary even though DOM element properties remained readable.
+
+### Resolution or Workaround
+
+Replaced the constructor check with direct capability checks for attributes, computed style, and `getBoundingClientRect`. Validation then confirmed the visible skip link and approved 3px technical-blue focus indicator.
+
+### Why This Approach
+
+The test only needs observable focus state; constructor identity is not part of the acceptance criterion.
+
+### Residual Risk
+
+None known.
+
+### Related Files and Logs
+
+- **Files:** `app/layout.tsx`
+- **Tech debt:** None.
+
+## ERR-20260825-13 — Shell Test Retained a Header from the Previous Test
+
+- **Timestamp:** 2026-08-25T21:02:50+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260825-06
+- **Area:** `components/site-shell.test.tsx` test isolation.
+
+### What Happened
+
+The first Phase 03 test run failed because `getByRole("link", { name: "About" })` found two links after a header rendered by the previous test remained in the document.
+
+### Reproduction
+
+1. Run `npm test` with both shell tests.
+2. Observe the duplicate About-link query failure in the second test.
+
+### Root Cause
+
+This Vitest setup does not automatically clean Testing Library renders between tests, and the new file did not register cleanup explicitly.
+
+### Resolution or Workaround
+
+Added `afterEach(cleanup)` to the shell test. The full suite then passed with 4 files and 12 tests.
+
+### Why This Approach
+
+Explicit cleanup preserves independent DOM state without weakening or broadening the assertions.
+
+### Residual Risk
+
+New multi-test component files should register cleanup unless a future global setup provides it.
+
+### Related Files and Logs
+
+- **Files:** `components/site-shell.test.tsx`
+- **Tech debt:** None.
+
 ## ERR-20260825-12 — ESLint 10 Is Incompatible with Next.js React Plugins
 
 - **Timestamp:** 2026-08-25T20:45:29+07:00
@@ -90,7 +166,7 @@ The incompatibility is resolved. The compatible version's maintenance status rem
 - **Timestamp:** 2026-08-25T20:40:27+07:00
 - **Status:** Workaround
 - **Severity:** Low
-- **Task:** TASK-20260825-05
+- **Task:** TASK-20260825-05, TASK-20260825-06
 - **Area:** Browser console validation.
 
 ### What Happened
@@ -108,7 +184,7 @@ A Chrome extension content script failed independently of the localhost applicat
 
 ### Resolution or Workaround
 
-Excluded the extension error from application results while retaining it in the validation record.
+Excluded the extension error from application results while retaining it in the validation record. It recurred during TASK-20260825-06 at each local route check; every captured URL remained extension-owned and no application-origin warning or error was present.
 
 ### Why This Approach
 
@@ -204,7 +280,7 @@ None known while `agentRules: false` remains configured.
 - **Timestamp:** 2026-08-25T20:40:27+07:00
 - **Status:** Workaround
 - **Severity:** Low
-- **Task:** TASK-20260825-05
+- **Task:** TASK-20260825-05, TASK-20260825-06
 - **Area:** Next.js build and local development server validation.
 
 ### What Happened
@@ -223,7 +299,7 @@ The managed execution environment restricts outbound font requests and process p
 
 ### Resolution or Workaround
 
-Ran `npx next build --webpack` with approved network access; it compiled, type-checked, generated all static pages, and completed successfully. Started the dev server with approved elevated port access and completed browser validation.
+Ran `npx next build --webpack`; it compiled, type-checked, generated all static pages, and completed successfully in TASK-20260825-05 and again in TASK-20260825-06. Started the dev server with approved elevated port access and completed browser validation for both tasks.
 
 ### Why This Approach
 

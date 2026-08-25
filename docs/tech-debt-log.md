@@ -47,6 +47,162 @@ Resolution summary and validation evidence, or `Not resolved`.
 
 ## Entries
 
+## DEBT-20260825-06 — Projects Navigation Precedes the Project Index Route
+
+- **First recorded:** 2026-08-25T21:06:50+07:00
+- **Last updated:** 2026-08-25T21:06:50+07:00
+- **Status:** Planned
+- **Priority:** Medium
+- **Area:** `/projects` navigation destination and Phase 04 route delivery.
+- **Introduced by:** TASK-20260825-06
+
+### Description
+
+The approved shared navigation includes `/projects`, but the project-index route is explicitly outside Phase 03 and therefore returns the Next.js 404 surface until Phase 04.
+
+### Why It Exists or Was Deferred
+
+The information architecture fixes `/projects` as the public destination while the phase boundary assigns its implementation to Phase 04. A temporary fragment or alternate URL would create a second public behavior to remove later.
+
+### Impact and Risk
+
+Visitors who select Projects before Phase 04 is delivered reach a 404 page.
+
+### Recommended Remediation
+
+Implement the approved `/projects` index in Phase 04 and retain the existing navigation URL.
+
+### Revisit Trigger
+
+Start of Phase 04.
+
+### Resolution
+
+Not resolved; scheduled by the approved phase plan.
+
+### Related Logs
+
+- **Tasks:** TASK-20260825-06
+- **Errors:** None.
+- **ADR:** Not required.
+
+## DEBT-20260825-05 — Personal Contact Destinations Are Not Approved
+
+- **First recorded:** 2026-08-25T21:06:50+07:00
+- **Last updated:** 2026-08-25T21:06:50+07:00
+- **Status:** Open
+- **Priority:** Medium
+- **Area:** Contact route and shared footer content.
+- **Introduced by:** Pre-existing content gap
+
+### Description
+
+No public email, LinkedIn, personal GitHub profile, or CV destination is recorded in the approved publication inventory. Contact and footer therefore expose only verified OhMyPos destinations, while the project brief's intended LinkedIn footer destination remains unavailable.
+
+### Why It Exists or Was Deferred
+
+Guessing personal destinations would violate the repository evidence boundary. Phase 03 proceeds with transparent project-review links rather than placeholders.
+
+### Impact and Risk
+
+Hiring teams can inspect public work but cannot initiate direct contact or open a personal professional profile from the site.
+
+### Recommended Remediation
+
+Obtain explicit approval for each intended public destination, then add the approved links to Contact and the footer with accessible new-tab naming.
+
+### Revisit Trigger
+
+Receipt of verified personal contact or CV destinations.
+
+### Resolution
+
+Not resolved.
+
+### Related Logs
+
+- **Tasks:** TASK-20260825-06
+- **Errors:** None.
+- **ADR:** Not required.
+
+## DEBT-20260825-04 — Project Brief Retained a Stale Phase 02 Block
+
+- **First recorded:** 2026-08-25T21:06:50+07:00
+- **Last updated:** 2026-08-25T21:06:50+07:00
+- **Status:** Resolved
+- **Priority:** Low
+- **Area:** `docs/project-brief.md` phase status.
+- **Introduced by:** Pre-existing
+
+### Description
+
+The project brief still said Phase 02 was unauthorized after TASK-20260825-05 had completed and validated the foundation.
+
+### Why It Exists or Was Deferred
+
+The status line was not updated when Phase 02 was later explicitly requested and implemented.
+
+### Impact and Risk
+
+Later agents could incorrectly treat the Phase 03 prerequisite as unmet despite the completed implementation and validation record.
+
+### Recommended Remediation
+
+Keep project status statements synchronized with the newest completed task log.
+
+### Revisit Trigger
+
+Any future mismatch between project-brief phase status and the task log.
+
+### Resolution
+
+Resolved in TASK-20260825-06 by updating the brief to record Phase 02 completion on 2026-08-25.
+
+### Related Logs
+
+- **Tasks:** TASK-20260825-05, TASK-20260825-06
+- **Errors:** None.
+- **ADR:** Not required.
+
+## DEBT-20260825-03 — Phase 03 Plan Conflicts with Approved CV State
+
+- **First recorded:** 2026-08-25T20:54:57+07:00
+- **Last updated:** 2026-08-25T21:06:50+07:00
+- **Status:** Resolved
+- **Priority:** High
+- **Area:** `docs/plannings/phase-03-layout-shell-static-pages.md` product acceptance criteria.
+- **Introduced by:** Pre-existing
+
+### Description
+
+The Phase 03 summary, scope, implementation steps, and definition of done require an approved Resume CTA. The later authoritative Phase 01 decision packet and `docs/project-brief.md` record the CV destination as `Unavailable` and explicitly prohibit rendering a Resume/CV CTA until a real public destination is approved.
+
+### Why It Exists or Was Deferred
+
+The phase plan was not reconciled when the CV decision was finalized. The user then directed implementation using the existing Phase 01 decision packet as the source of truth.
+
+### Impact and Risk
+
+Following the phase plan literally would require a fabricated or broken destination; following the project brief without documenting the difference would make the phase's stated definition of done impossible to satisfy as written.
+
+### Recommended Remediation
+
+Keep the Phase 03 plan aligned with the Phase 01 CV state until a new public destination is explicitly approved.
+
+### Revisit Trigger
+
+Whenever a public CV destination is approved.
+
+### Resolution
+
+Resolved in TASK-20260825-06. The Phase 03 summary, scope, risk, implementation steps, tests, and definition of done now explicitly require omission while the CV destination remains `Unavailable`; `/resume` browser verification returns 404.
+
+### Related Logs
+
+- **Tasks:** TASK-20260825-06
+- **Errors:** None.
+- **ADR:** Not required.
+
 ## DEBT-20260825-02 — Compatible ESLint Release Is No Longer Supported Upstream
 
 - **First recorded:** 2026-08-25T20:48:10+07:00

@@ -50,6 +50,65 @@ Non-obvious assumptions, fragile areas, manual steps, and what the next AI mode/
 
 ## Entries
 
+## TASK-20260825-06 — Implement Phase 03 Layout Shell and Static Pages
+
+- **Timestamp:** 2026-08-25T20:54:57+07:00
+- **Status:** Complete
+- **Request:** Implement `docs/plannings/phase-03-layout-shell-static-pages.md`.
+- **Scope:** Root shell, responsive navigation, footer, Home, About, Contact, metadata, accessibility states, route/component tests, Phase 03 planning reconciliation, and continuity logs.
+
+### Summary
+
+Implemented the Phase 03 shared shell and three static routes using only approved public evidence. The result is a responsive, dark-first, evidence-led portfolio surface with a sticky four-item navigation, skip link, active states, verified OhMyPos links and exact metric wording, and no Resume/CV route or CTA.
+
+### What Changed
+
+- Rebuilt `app/layout.tsx` around a shared sticky header, keyboard-visible skip link, content region, footer, metadata title template, and existing Geist theme.
+- Replaced the foundation smoke page with an evidence-led Home route and approved OhMyPos concurrency result presented as a scannable stat ledger.
+- Added `/about` and `/contact` as statically rendered routes; both avoid unsupported biography/contact claims and use only evidence already approved for publication.
+- Added shared page-container, navigation, header, and footer components. The only client boundary is active-route detection in `PrimaryNav`; mobile navigation is CSS-responsive.
+- Added five route smoke tests and two shell/navigation tests, bringing the suite to 12 tests.
+- Reconciled the Phase 03 plan with the Phase 01 `Unavailable` CV decision and corrected the stale Phase 02 status in the project brief.
+
+### Key Decisions
+
+- **Decision:** Treat the Phase 01 packet as authoritative and omit Resume/CV, direct email, and LinkedIn destinations that are not approved.
+  - **Reasoning:** This implements the largest safe Phase 03 surface without fabricating personal details or rendering broken placeholder links.
+  - **ADR:** Not required.
+- **Decision:** Use a CSS-responsive four-item navigation with one narrow active-route client component.
+  - **Reasoning:** Four short labels remain usable without menu state, reducing interaction complexity while preserving route awareness and keyboard access.
+  - **ADR:** Not required.
+
+### Validation
+
+- `npm run lint` — Passed.
+- `npm run typecheck` — Passed.
+- `npm test` — Passed; 4 files and 12 tests.
+- `npm run build` — Environment-blocked by the known Turbopack internal port-binding restriction tracked in ERR-20260825-08.
+- `npx next build --webpack` — Passed; compiled, type-checked, and statically generated `/`, `/about`, and `/contact` with no `/resume` route.
+- Browser checks at 390×844, 768×1024, and 1440×900 — Passed; no horizontal overflow, correct active route, one H1 per route, sticky header, exact approved metric copy, and valid external-link attributes.
+- Keyboard and accessibility inspection — Passed; skip link is first in traversal, visible when focused, targets `#main-content`, and uses the approved 3px technical-blue focus indicator. Reduced-motion CSS is present.
+- Browser console — No application-origin warnings or errors; the recurring Chrome-extension error remains tracked in ERR-20260825-11.
+- `/resume` direct browser request — Passed; returned the Next.js 404 surface and no rendered link points to `/resume`.
+
+### Current State
+
+Phase 03 is complete within the currently approved publication boundary. Home, About, and Contact render through the shared shell. Direct email, LinkedIn, CV, `/resume`, and project-index content remain absent; `/projects` is the approved next-phase navigation destination and will return 404 until Phase 04 implements it.
+
+### Handoff Notes
+
+Do not replace the project-oriented Contact links with guessed personal destinations. When approved email, LinkedIn, personal GitHub, or CV destinations become available, update Contact/footer and revisit the CV omission. Phase 04 should implement `/projects` without changing the current navigation URL.
+
+### Open Threads
+
+- Approved personal email, LinkedIn, personal GitHub, and CV destinations remain future content inputs.
+- Phase 04 must resolve the intentional `/projects` navigation gap.
+
+### Related Logs
+
+- **Errors:** ERR-20260825-08, ERR-20260825-11, ERR-20260825-13, ERR-20260825-14.
+- **Tech debt:** DEBT-20260825-03, DEBT-20260825-04, DEBT-20260825-05, DEBT-20260825-06.
+
 ## TASK-20260825-05 — Implement Phase 02 Foundation Scaffold
 
 - **Timestamp:** 2026-08-25T20:26:29+07:00
