@@ -1,0 +1,59 @@
+---
+slug: project-system-demo
+title: Project System Demonstration
+summary: A transparent fixture that exercises the portfolio's local MDX case-study contract without presenting a client or product claim.
+hook: A controlled content fixture proves the project template before real case-study copy is published.
+stack:
+  - Next.js
+  - TypeScript
+  - MDX
+status: published
+order: 100
+---
+
+## Hook
+
+This page is an implementation fixture, not a claim about a shipped client system. It demonstrates the public case-study structure with explicit boundaries.
+
+## Problem
+
+Free-form project content can drift into inconsistent sections, hidden evidence gaps, or unsupported claims unless the publishing contract is checked before rendering.
+
+## Key Decisions & Trade-offs
+
+The project uses repository-owned MDX with validated frontmatter and a fixed seven-section order. This keeps authoring close to the code and avoids a CMS, at the cost of requiring a code review and build for every content change.
+
+```text
+published content -> static route
+draft content     -> excluded
+invalid content   -> build failure
+```
+
+## Measured Results
+
+No product benchmark is claimed by this fixture.
+
+<StatBlock
+  label="Evidence state"
+  value="Fixture"
+  context="Template behavior only; no product metric is represented."
+  qualifier="Replace this fixture only when a real case study has an approved evidence contract."
+/>
+
+## What This Demonstrates
+
+The page exercises validated metadata, deterministic discovery, static route generation, constrained MDX components, and accessible metric semantics.
+
+## Limitations & Next Steps
+
+The fixture intentionally omits product-specific outcomes, external repositories, and live-demo links. Phase 5 owns the approved OhMyPos narrative.
+
+## Technical Evidence
+
+The implementation and its automated tests are the evidence for this fixture:
+
+- Metadata, section-order, component, slug, and publication validation in `lib/mdx.ts`.
+- Static list and detail routes under `app/projects`.
+- Loader, rendering, metadata, and static-parameter coverage in the Phase 4 tests.
+
+No external destination is presented as proof.

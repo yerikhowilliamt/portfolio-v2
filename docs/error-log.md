@@ -46,6 +46,198 @@ Conditions under which the error could recur, or `None known`.
 
 ## Entries
 
+## ERR-20260826-05 — Browser QA Used an Unsupported Wait Helper
+
+- **Timestamp:** 2026-08-26T00:40:56+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260826-03
+- **Area:** Local browser validation command.
+
+### What Happened
+
+The first cross-route QA script stopped with `tabAll.waitForTimeout is not a function` after navigating to `/projects`.
+
+### Reproduction
+
+1. Call `tabAll.waitForTimeout(300)` in the connected browser session.
+2. Observe that the Browser tab wrapper does not expose that Playwright helper.
+
+### Root Cause
+
+The browser session exposes scoped navigation and evaluation methods, not the full Playwright `Page` API.
+
+### Resolution or Workaround
+
+Removed the unsupported delay and relied on the awaited `goto` calls before evaluating each route. The project index and detail QA then completed successfully.
+
+### Why This Approach
+
+Navigation was already awaited, so an additional fixed delay was unnecessary and would not improve the validity of the checks.
+
+### Residual Risk
+
+None known.
+
+### Related Files and Logs
+
+- **Files:** None.
+- **Tech debt:** None.
+
+## ERR-20260826-04 — shadcn Add Requires Explicit Dependency-Mutation Approval
+
+- **Timestamp:** 2026-08-26T00:20:54+07:00
+- **Status:** Resolved
+- **Severity:** Medium
+- **Task:** TASK-20260826-02
+- **Area:** shadcn registry component installation.
+
+### What Happened
+
+`npx shadcn@latest add @shadcn/card @shadcn/badge @shadcn/separator` was rejected before execution because the mutating CLI command may add or alter the Radix dependency and lockfile. The user's visual-component preference did not explicitly approve that gated package or lockfile impact.
+
+### Reproduction
+
+1. Verify only `button` is installed in the project shadcn component inventory.
+2. Dry-run adding `card`, `badge`, and `separator`; observe three source files plus a reported `radix-ui` dependency.
+3. Attempt the mutating add command without explicit dependency/lockfile approval and observe it stop before repository mutation.
+
+### Root Cause
+
+Repository governance requires explicit approval before adding or changing dependencies or lockfile-resolved packages. The shadcn CLI cannot be assumed to leave those files untouched even though `radix-ui` is already present.
+
+### Resolution or Workaround
+
+The user explicitly approved the exact shadcn add command and any resulting manifest or lockfile changes. The command then created `card.tsx`, `badge.tsx`, and `separator.tsx`; inspection confirmed it did not change `package.json`, `package-lock.json`, or `components.json`. The Phase 04 refactor and full validation matrix passed.
+
+### Why This Approach
+
+Stopping preserves the dependency approval boundary and follows the shadcn registry workflow instead of bypassing it.
+
+### Residual Risk
+
+None known.
+
+### Related Files and Logs
+
+- **Files:** `components/project-card.tsx`, `components/stat-block.tsx`, `components/project-mdx-components.tsx`, `package.json`, `package-lock.json`
+- **Tech debt:** DEBT-20260826-02.
+
+## ERR-20260826-03 — Sandboxed shadcn Registry Lookup Could Not Resolve npm
+
+- **Timestamp:** 2026-08-26T00:20:54+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260826-02
+- **Area:** shadcn CLI registry inspection.
+
+### What Happened
+
+The initial sandboxed `npx shadcn@latest info --json` and documentation lookup failed with `getaddrinfo ENOTFOUND registry.npmjs.org` and could not write npm logs outside the workspace.
+
+### Reproduction
+
+1. Run the shadcn CLI registry lookup in the restricted network sandbox.
+2. Observe npm registry DNS resolution fail.
+
+### Root Cause
+
+The managed sandbox blocks the outbound registry access required by `npx shadcn@latest`.
+
+### Resolution or Workaround
+
+Repeated the read-only lookup with approved network access. Project context, official documentation links, and dry-run output were then retrieved successfully.
+
+### Why This Approach
+
+The official registry is the authoritative source for the current component API and generated-file impact.
+
+### Residual Risk
+
+Future shadcn registry operations in this environment will continue to require network-enabled execution.
+
+### Related Files and Logs
+
+- **Files:** `components.json`
+- **Tech debt:** None.
+
+## ERR-20260826-02 — Stat Test Assumed DT Text Was an Accessible Name
+
+- **Timestamp:** 2026-08-26T00:12:17+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260826-01
+- **Area:** `lib/mdx.test.tsx` and `app/projects/projects.test.tsx` stat-block assertions.
+
+### What Happened
+
+The first full test run passed lint and type-check but failed two tests because `getByRole("term", { name: ... })` could not find the rendered `<dt>` elements even though their visible text and `term` roles were present.
+
+### Reproduction
+
+1. Render a `StatBlock` with a visible `<dt>` label.
+2. Query it with Testing Library using role `term` plus a name derived from its text.
+3. Observe that the role exists but has an empty accessible name under the accessibility-query model.
+
+### Root Cause
+
+The test incorrectly assumed that a `<dt>` element's text content becomes an accessible name for role-based querying. The semantic `<dl>/<dt>/<dd>` markup itself was correct.
+
+### Resolution or Workaround
+
+Kept the semantic component unchanged and asserted the `term` role, visible text, and adjacent `<dd>` reading order separately. The full 16-test suite then passed.
+
+### Why This Approach
+
+Adding redundant ARIA solely to satisfy a mistaken test would reduce semantic clarity. The revised assertion verifies the intended document structure directly.
+
+### Residual Risk
+
+None known.
+
+### Related Files and Logs
+
+- **Files:** `components/stat-block.tsx`, `lib/mdx.test.tsx`, `app/projects/projects.test.tsx`
+- **Tech debt:** None.
+
+## ERR-20260826-01 — Combined Patch Targeted the Same File Twice
+
+- **Timestamp:** 2026-08-26T00:12:17+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260826-01
+- **Area:** Initial Phase 04 `apply_patch` operations.
+
+### What Happened
+
+Two attempted combined patches were rejected with `invalid patch: multiple operations target ...` because each tried to delete and add the same existing file in one patch. Neither rejected patch changed repository files.
+
+### Reproduction
+
+1. Submit one patch containing both `Delete File` and `Add File` for an existing path.
+2. Observe patch verification fail before edits are applied.
+
+### Root Cause
+
+The patch format does not accept multiple operations against the same path in one invocation.
+
+### Resolution or Workaround
+
+Separated deletion from creation, then applied the remaining task-scoped changes normally.
+
+### Why This Approach
+
+Splitting the operations retained reviewable `apply_patch` edits and avoided unsafe broad file rewrites.
+
+### Residual Risk
+
+None known.
+
+### Related Files and Logs
+
+- **Files:** `lib/mdx.ts`, `lib/mdx.test.tsx`
+- **Tech debt:** None.
+
 ## ERR-20260825-19 — LinkedIn Returned Anti-Bot HTTP 999
 
 - **Timestamp:** 2026-08-25T23:43:36+07:00
@@ -357,7 +549,7 @@ The incompatibility is resolved. The compatible version's maintenance status rem
 - **Timestamp:** 2026-08-25T20:40:27+07:00
 - **Status:** Workaround
 - **Severity:** Low
-- **Task:** TASK-20260825-05, TASK-20260825-06
+- **Task:** TASK-20260825-05, TASK-20260825-06, TASK-20260826-01, TASK-20260826-02, TASK-20260826-03
 - **Area:** Browser console validation.
 
 ### What Happened
@@ -371,7 +563,7 @@ Desktop and mobile browser checks captured `TypeError: Cannot read properties of
 
 ### Root Cause
 
-A Chrome extension content script failed independently of the localhost application. The error URL is extension-owned, and no application-origin warning or error was captured.
+A Chrome extension content script failed independently of the localhost application. The error URL is extension-owned, and no application-origin warning or error was captured. It recurred across the Phase 04 project index, detail, 404, shadcn-refactor, and full-site primitive-migration browser checks on 2026-08-26; every captured instance remained extension-owned.
 
 ### Resolution or Workaround
 

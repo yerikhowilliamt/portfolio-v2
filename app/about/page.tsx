@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 
 import { PageContainer } from "@/components/page-container";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "About",
@@ -56,28 +59,34 @@ export default function AboutPage() {
               <h2 id="focus-title" className="font-mono text-xs font-semibold tracking-[0.18em] text-primary uppercase">
                 Focus areas
               </h2>
-              <div className="grid border md:grid-cols-3">
+              <div className="grid gap-4 md:grid-cols-3">
                 {focusAreas.map((area, index) => (
-                  <article
-                    key={area.title}
-                    className="flex flex-col gap-5 border-b p-5 last:border-b-0 md:border-r md:border-b-0 md:last:border-r-0"
-                  >
-                    <p className="font-mono text-xs text-muted-foreground">0{index + 1}</p>
-                    <h3 className="text-lg font-semibold">{area.title}</h3>
-                    <p className="text-sm leading-6 text-muted-foreground">{area.description}</p>
+                  <article key={area.title}>
+                    <Card className="h-full">
+                      <CardHeader>
+                        <Badge variant="technical">0{index + 1}</Badge>
+                        <CardTitle><h3>{area.title}</h3></CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm leading-6 text-muted-foreground">{area.description}</p>
+                      </CardContent>
+                    </Card>
                   </article>
                 ))}
               </div>
             </section>
 
-            <section aria-labelledby="evidence-title" className="flex max-w-2xl flex-col gap-4 border-l border-primary pl-5">
-              <h2 id="evidence-title" className="text-xl font-semibold">
-                Evidence before adjectives
-              </h2>
-              <p className="leading-7 text-muted-foreground">
-                Each published result is bounded by its test scenario and environment. Repositories,
-                architecture decisions, and test records are linked where they are genuinely public.
-              </p>
+            <section aria-labelledby="evidence-title" className="max-w-2xl">
+              <Alert role="note">
+                <AlertTitle id="evidence-title">Evidence before adjectives</AlertTitle>
+                <AlertDescription>
+                  <p>
+                    Each published result is bounded by its test scenario and environment.
+                    Repositories, architecture decisions, and test records are linked where they are
+                    genuinely public.
+                  </p>
+                </AlertDescription>
+              </Alert>
             </section>
           </div>
         </div>

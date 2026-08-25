@@ -1,6 +1,15 @@
 import type { Metadata } from "next";
 
 import { PageContainer } from "@/components/page-container";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -57,29 +66,29 @@ export default function ContactPage() {
               Public project destinations
             </h2>
             {publicDestinations.map((destination, index) => (
-              <a
-                key={destination.href}
-                href={destination.href}
-                target={destination.newTab ? "_blank" : undefined}
-                rel={destination.newTab ? "noopener noreferrer" : undefined}
-                aria-label={
-                  destination.newTab
-                    ? `${destination.label} (opens in a new tab)`
-                    : destination.label
-                }
-                className="group grid gap-3 border p-5 transition-colors hover:border-primary hover:bg-card sm:grid-cols-[3rem_1fr_auto] sm:items-center"
-              >
-                <span className="font-mono text-xs text-primary">0{index + 1}</span>
-                <span className="flex flex-col gap-1">
-                  <span className="font-semibold">{destination.label}</span>
-                  <span className="text-sm leading-6 text-muted-foreground">
-                    {destination.description}
-                  </span>
-                </span>
-                <span aria-hidden="true" className="font-mono text-sm text-muted-foreground group-hover:text-primary">
-                  {destination.newTab ? "↗" : "→"}
-                </span>
-              </a>
+              <Card key={destination.href}>
+                <CardHeader>
+                  <Badge variant="technical">0{index + 1}</Badge>
+                  <CardTitle>{destination.label}</CardTitle>
+                  <CardDescription>{destination.description}</CardDescription>
+                </CardHeader>
+                <CardFooter>
+                  <Button asChild variant="link" size="sm">
+                    <a
+                      href={destination.href}
+                      target={destination.newTab ? "_blank" : undefined}
+                      rel={destination.newTab ? "noopener noreferrer" : undefined}
+                      aria-label={
+                        destination.newTab
+                          ? `${destination.label} (opens in a new tab)`
+                          : destination.label
+                      }
+                    >
+                      {destination.label} <span aria-hidden="true">{destination.newTab ? "↗" : "→"}</span>
+                    </a>
+                  </Button>
+                </CardFooter>
+              </Card>
             ))}
           </section>
         </div>

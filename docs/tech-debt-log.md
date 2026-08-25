@@ -47,11 +47,89 @@ Resolution summary and validation evidence, or `Not resolved`.
 
 ## Entries
 
+## DEBT-20260826-02 — Phase 04 Visual Primitives Are Not Yet shadcn-Composed
+
+- **First recorded:** 2026-08-26T00:20:54+07:00
+- **Last updated:** 2026-08-26T00:25:59+07:00
+- **Status:** Resolved
+- **Priority:** Medium
+- **Area:** Phase 04 project cards, stack labels, stat surface, section dividers, and link actions.
+- **Introduced by:** TASK-20260826-01
+
+### Description
+
+Before TASK-20260826-02, Phase 04 used project-specific styled markup for visual card, badge-like stack labels, stat surface, section borders, and link actions even though official shadcn `Card`, `Badge`, `Separator`, and the installed `Button` were the intended primitives.
+
+### Why It Exists or Was Deferred
+
+The original Phase 04 implementation followed the repository rule that semantic native HTML is allowed. The user subsequently established a stricter shadcn-first preference, then explicitly approved the registry CLI and any potential dependency/lockfile mutations.
+
+### Impact and Risk
+
+The inconsistency could have caused custom visual markup to diverge from shared shadcn variants. The resolved implementation now uses the shared primitives while preserving semantic document elements.
+
+### Recommended Remediation
+
+Completed: official `Card`, `Badge`, and `Separator` source components were added through the shadcn CLI, Phase 04 surfaces were composed with them, and the existing `Button` now owns the case-study CTA.
+
+### Revisit Trigger
+
+Satisfied on 2026-08-26 when the user approved the exact shadcn add command.
+
+### Resolution
+
+Resolved in TASK-20260826-02 after explicit approval. Official shadcn Card, Badge, and Separator source components were added without manifest or lockfile changes; Phase 04 cards, tags, stat surface, dividers, and CTA were migrated and passed lint, type-check, 16 tests, Webpack production build, and mobile/desktop browser QA.
+
+### Related Logs
+
+- **Tasks:** TASK-20260826-01, TASK-20260826-02
+- **Errors:** ERR-20260826-04.
+- **ADR:** Not required.
+
+## DEBT-20260826-01 — Public Project Index Uses a Temporary Implementation Fixture
+
+- **First recorded:** 2026-08-26T00:12:17+07:00
+- **Last updated:** 2026-08-26T00:12:17+07:00
+- **Status:** Planned
+- **Priority:** Medium
+- **Area:** `content/projects/project-system-demo.mdx` and public project index content.
+- **Introduced by:** TASK-20260826-01
+
+### Description
+
+The public project index currently contains a transparent implementation fixture so Phase 04 can verify list/detail behavior without publishing the Phase 05 OhMyPos narrative. It is deliberately labeled as a fixture and makes no product benchmark or client claim.
+
+### Why It Exists or Was Deferred
+
+Phase 04 requires representative public content and route rendering, while the approved phase boundary reserves real OhMyPos case-study population for Phase 05.
+
+### Impact and Risk
+
+The project system is fully testable and honest, but recruiters see a template demonstration rather than the portfolio's intended flagship case study until Phase 05 completes.
+
+### Recommended Remediation
+
+In Phase 05, add the evidence-approved OhMyPos MDX case study, validate every claim and destination, then remove or demote the implementation fixture without weakening the shared contract.
+
+### Revisit Trigger
+
+Start of Phase 05 or any request to publish the OhMyPos case study.
+
+### Resolution
+
+Not resolved; intentionally scheduled for Phase 05.
+
+### Related Logs
+
+- **Tasks:** TASK-20260826-01
+- **Errors:** None.
+- **ADR:** Not required.
+
 ## DEBT-20260825-06 — Projects Navigation Precedes the Project Index Route
 
 - **First recorded:** 2026-08-25T21:06:50+07:00
-- **Last updated:** 2026-08-25T21:06:50+07:00
-- **Status:** Planned
+- **Last updated:** 2026-08-26T00:12:17+07:00
+- **Status:** Resolved
 - **Priority:** Medium
 - **Area:** `/projects` navigation destination and Phase 04 route delivery.
 - **Introduced by:** TASK-20260825-06
@@ -78,11 +156,11 @@ Start of Phase 04.
 
 ### Resolution
 
-Not resolved; scheduled by the approved phase plan.
+Resolved in TASK-20260826-01. `/projects` now renders a static published-project index, the shared navigation active state is verified, and the current published card resolves to its statically generated detail route.
 
 ### Related Logs
 
-- **Tasks:** TASK-20260825-06
+- **Tasks:** TASK-20260825-06, TASK-20260826-01
 - **Errors:** None.
 - **ADR:** Not required.
 

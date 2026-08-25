@@ -1,0 +1,38 @@
+---
+slug: draft-project
+title: Draft Project Fixture
+summary: A non-public fixture used to verify that draft content is excluded from routes and project listings.
+hook: This sentence must never appear on a public project route.
+stack:
+  - TypeScript
+status: draft
+order: 1
+---
+
+## Hook
+
+Draft-only fixture content.
+
+## Problem
+
+Draft filtering needs a stable repository-owned fixture.
+
+## Key Decisions & Trade-offs
+
+The fixture remains valid content so filtering, rather than a parse failure, controls publication.
+
+## Measured Results
+
+No metric is claimed.
+
+## What This Demonstrates
+
+Draft state is distinct from invalid content.
+
+## Limitations & Next Steps
+
+This content must remain absent from public output.
+
+## Technical Evidence
+
+Automated loader and route tests cover this state.

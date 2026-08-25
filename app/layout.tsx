@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { Button } from "@/components/ui/button";
 
 import "./globals.css";
 
@@ -33,12 +34,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <a
-          href="#main-content"
-          className="fixed top-4 left-4 z-50 -translate-y-24 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-transform focus:translate-y-0"
-        >
-          Skip to main content
-        </a>
+        <Button asChild className="fixed top-4 left-4 z-50 -translate-y-24 focus:translate-y-0">
+          <a href="#main-content">Skip to main content</a>
+        </Button>
         <div className="flex min-h-screen flex-col">
           <SiteHeader />
           <div className="flex-1">{children}</div>

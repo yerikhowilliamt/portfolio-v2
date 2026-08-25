@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 const navigation = [
   { href: "/", label: "Home" },
@@ -23,16 +23,16 @@ export function PrimaryNav() {
 
           return (
             <li key={href}>
-              <Link
-                href={href}
-                aria-current={isActive ? "page" : undefined}
-                className={cn(
-                  "block rounded-md px-2 py-2 text-center text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:px-3 sm:text-sm",
-                  isActive && "bg-accent text-foreground",
-                )}
+              <Button
+                asChild
+                variant={isActive ? "secondary" : "ghost"}
+                size="sm"
+                className="w-full sm:w-auto"
               >
-                {label}
-              </Link>
+                <Link href={href} aria-current={isActive ? "page" : undefined}>
+                  {label}
+                </Link>
+              </Button>
             </li>
           );
         })}

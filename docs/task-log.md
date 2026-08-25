@@ -50,6 +50,184 @@ Non-obvious assumptions, fragile areas, manual steps, and what the next AI mode/
 
 ## Entries
 
+## TASK-20260826-03 — Migrate Site-Wide Visual and Action Primitives to shadcn
+
+- **Timestamp:** 2026-08-26T00:40:56+07:00
+- **Status:** Complete
+- **Request:** Apply the shadcn-first visual/action primitive policy across the whole portfolio, not only Phase 04.
+- **Scope:** Shared shell, Home, About, Contact, Projects regression coverage, shadcn Alert source, implementation contract, browser QA, and continuity logs.
+
+### Summary
+
+Migrated every eligible reusable visual/action primitive across the current public site to shadcn composition. Navigation, brand, skip, footer, hero, evidence, and contact actions now use Button; informational callouts use Alert; visual surfaces use Card; labels use Badge; and decorative dividers use Separator. Semantic document and inline-content elements remain native only where shadcn has no suitable equivalent.
+
+### What Changed
+
+- Added the official shadcn Alert source component without changing dependencies, the lockfile, or registry configuration.
+- Added a centralized `brand` Button variant and migrated shared shell links, active navigation, skip link, homepage CTAs/evidence links, and contact destinations to `Button asChild` compositions.
+- Migrated Home and About callouts to Alert, Home/About/Contact visual surfaces to full Card compositions, index labels to Badge, and shell/section dividers to Separator.
+- Added component-slot regression assertions to the static-page and site-shell tests.
+- Tightened `docs/project-brief.md` so future reusable visual/action primitives must use an appropriate shadcn component while semantic document structure remains native.
+
+### Key Decisions
+
+- **Decision:** Apply the rule to visual/action primitives, not to every emitted HTML element.
+  - **Reasoning:** shadcn itself renders native semantic elements; replacing headings, paragraphs, lists, inline MDX links, blockquotes, or code blocks with unsuitable controls would reduce semantics and accessibility.
+  - **ADR:** Not required.
+- **Decision:** Keep Button customization in a named `brand` variant.
+  - **Reasoning:** Shared brand treatment belongs in the shadcn primitive contract rather than repeated call-site class overrides.
+  - **ADR:** Not required.
+
+### Validation
+
+- `npx shadcn@latest docs alert` — Passed; official Alert composition reviewed.
+- `npx shadcn@latest add @shadcn/alert --dry-run` — Passed; one source file and no dependency changes proposed.
+- `npx shadcn@latest add @shadcn/alert` — Passed; created `components/ui/alert.tsx` without manifest, lockfile, or registry-config changes.
+- `npm run lint` — Passed.
+- `npm run typecheck` — Passed.
+- `npm test` — Passed; 5 files and 16 tests.
+- `npx next build --webpack` — Passed; all public routes built and the project detail fixture remained statically generated.
+- Browser checks at 390×844 and 1440×900 — Passed across Home, About, Contact, Projects, and project detail; expected shadcn slots render, navigation state is correct, focus remains visible, and no horizontal overflow occurs.
+- Browser console — No application-origin warning or error; only the known extension-origin error from ERR-20260825-11 recurred.
+- Source audit — Remaining styled native surfaces are limited to MDX blockquote/code renderers; remaining native anchors are semantic children of `Button asChild` or inline content links.
+
+### Current State
+
+The whole current portfolio now follows the shadcn-first visual/action primitive policy, including the shared shell and all existing public routes. No dependency or public-route changes were introduced.
+
+### Handoff Notes
+
+For future UI, start from installed shadcn primitives and add registry components only through the approval-aware workflow. Preserve native HTML for semantic structure and inline document content when no suitable shadcn primitive exists.
+
+### Open Threads
+
+- None.
+
+### Related Logs
+
+- **Errors:** ERR-20260826-05 (resolved), ERR-20260825-11.
+- **Tech debt:** None.
+
+## TASK-20260826-02 — Align Phase 04 Visual Primitives with shadcn
+
+- **Timestamp:** 2026-08-26T00:20:54+07:00
+- **Status:** Complete
+- **Request:** Use shadcn components consistently instead of hand-built native visual components.
+- **Scope:** Phase 04 project card, stack badges, stat surface, section separators, action links, shadcn registry inspection, dependency-impact check, and continuity logs.
+
+### Summary
+
+Migrated all eligible Phase 04 visual primitives to official shadcn source components after explicit approval. Project cards now use the full Card composition, stack and stat labels use Badge, visual dividers use Separator, and the case-study CTA uses the existing Button with `asChild`. Semantic headings, articles, lists, links, and definition-list data remain native underneath the component system because they express document structure and accessibility rather than replaceable visual primitives.
+
+### What Changed
+
+- Added official `Card`, `Badge`, and `Separator` source files through the shadcn CLI; the approved command did not change `package.json`, `package-lock.json`, or `components.json`.
+- Added a project-specific `technical` Badge variant so technical tags retain the repository's monospace design contract without scattered overrides.
+- Reworked the project card around `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, and `CardFooter`; its CTA now composes `Button asChild` with Next.js `Link`.
+- Reworked `StatBlock` as a shadcn Card while preserving ordered `<dl>/<dt>/<dd>` semantics.
+- Replaced raw visual border dividers in the detail header and MDX section headings with shadcn Separator.
+
+### Key Decisions
+
+- **Decision:** Preserve semantic HTML underneath shadcn compositions rather than interpreting “no native components” literally.
+  - **Reasoning:** shadcn components themselves render semantic native elements; headings, articles, lists, links, and definition lists remain necessary for accessibility. The requested constraint is applied to reusable visual primitives, not to removal of document semantics.
+  - **ADR:** Not required.
+- **Decision:** Add the official registry components only after the user explicitly approved the exact CLI action and possible manifest/lockfile impact.
+  - **Reasoning:** This preserves the dependency approval boundary while keeping the components registry-traceable; inspection confirmed the command ultimately created only three source files.
+  - **ADR:** Not required.
+
+### Validation
+
+- `npx shadcn@latest info --json` — Passed; Next.js 16, Tailwind v4, RSC, Radix base, and only `button` currently installed.
+- Official shadcn docs for `card`, `badge`, and `separator` — Reviewed.
+- `npx shadcn@latest add card badge separator --dry-run` — Passed; proposed three new UI source files and identified `radix-ui`, which is already installed.
+- `npx shadcn@latest add @shadcn/card @shadcn/badge @shadcn/separator` — Passed after explicit approval; created three UI source files with no manifest or lockfile diff.
+- `npm run lint` — Passed.
+- `npm run typecheck` — Passed.
+- `npm test` — Passed; 5 files and 16 tests.
+- `npx next build --webpack` — Passed; `/projects` remains static and `/projects/project-system-demo` remains prerendered through `generateStaticParams`.
+- Browser checks at 390×844 and 1440×900 — Passed; shadcn Card, Badge, Button, and Separator slots render, no horizontal overflow occurs, the seven-section order and stat reading order remain correct, code stays contained, and focus retains its visible 3px technical-blue outline.
+- Browser console — No application-origin warning or error; only the known extension-origin error from ERR-20260825-11 recurred.
+- `git diff --check` — Passed.
+
+### Current State
+
+Phase 04 now follows the stricter shadcn-first component preference for every eligible visual primitive. Semantic document elements remain intentionally native because shadcn does not replace their meaning and itself renders native elements internally.
+
+### Handoff Notes
+
+Use shadcn primitives before introducing future project-specific visual markup. Preserve native semantic elements where they represent content structure, and add any missing registry component through the same approval-aware CLI workflow.
+
+### Open Threads
+
+- None.
+
+### Related Logs
+
+- **Errors:** ERR-20260826-03, ERR-20260826-04 (resolved), ERR-20260825-11.
+- **Tech debt:** DEBT-20260826-02 (resolved).
+
+## TASK-20260826-01 — Implement Phase 04 Project System
+
+- **Timestamp:** 2026-08-26T00:12:17+07:00
+- **Status:** Complete
+- **Request:** Implement `docs/plannings/phase-04-project-system.md`.
+- **Scope:** Project metadata and discovery, controlled MDX rendering, `/projects`, `/projects/[slug]`, static generation, draft and 404 behavior, stat blocks, fixtures, tests, browser QA, project status, and continuity logs.
+
+### Summary
+
+Implemented the Phase 04 project list and static detail system. Published content now passes a typed metadata contract and exact seven-section case-study contract before it can enter the public build; published routes are generated deterministically, while drafts and unknown slugs remain unavailable. A transparent implementation fixture exercises the surface without publishing the deferred OhMyPos narrative or unsupported metrics.
+
+### What Changed
+
+- Expanded `lib/mdx.ts` with validated metadata, deterministic discovery and ordering, duplicate-slug detection, draft filtering, constrained MDX validation, and published-project lookup.
+- Added `/projects` cards and `/projects/[slug]` static detail generation with per-project metadata, `dynamicParams = false`, and explicit 404 behavior.
+- Added a reusable semantic `StatBlock`, project card, and allowlisted MDX presentation components. Project links accept only root-relative or HTTPS destinations; external links receive `noopener noreferrer`.
+- Replaced the Phase 02 smoke fixture with a transparent published template fixture and a valid non-public draft fixture. The published fixture explicitly makes no product benchmark or client claim.
+- Added loader and route coverage for sorting, duplicates, drafts, missing and malformed slugs, seven-section order, safe evidence links, raw/unsupported MDX rejection, metadata, cards, static params, and stat semantics.
+- Updated the project brief to record Phase 04 completion while preserving Phase 05 ownership of the real OhMyPos narrative.
+
+### Key Decisions
+
+- **Decision:** Enforce the content contract before MDX compilation with exact H2 order plus an allowlist containing only `StatBlock`; reject imports, exports, and raw JSX/HTML.
+  - **Reasoning:** Repository-owned MDX remains expressive enough for the approved case-study format while malformed structure and an expanded execution/rendering boundary fail the build.
+  - **ADR:** Not required; this implements the approved Phase 02 pipeline and Phase 04 plan without changing architecture.
+- **Decision:** Keep `slug` canonical in metadata rather than deriving it from the filename.
+  - **Reasoning:** This supports explicit schema validation and makes duplicate metadata slugs detectable across distinct files while still restricting public slugs to lowercase kebab case.
+  - **ADR:** Not required.
+- **Decision:** Publish only a plainly labeled implementation fixture in Phase 04.
+  - **Reasoning:** The route and template need representative public rendering, but Phase 05 owns the approved OhMyPos case-study copy and no product result may be invented.
+  - **ADR:** Not required.
+
+### Validation
+
+- `npm run lint` — Passed.
+- `npm run typecheck` — Passed.
+- `npm test` — Passed; 5 files and 16 tests.
+- `npx next build --webpack` — Passed; `/projects` is static and `/projects/project-system-demo` is prerendered through `generateStaticParams`.
+- `git diff --check` — Passed.
+- Browser checks at 390×844 and 1440×900 — Passed; index/detail have one H1, correct Projects active state, no horizontal overflow, exact seven-section order, contained code, ordered stat semantics, and three evidence-list items.
+- Keyboard focus check — Passed; skip link is first in traversal with a visible 3px technical-blue outline.
+- Unknown and draft route checks — Passed; unknown slug rendered the 404 surface and draft publication is excluded by loader and static-param tests.
+- Browser console — No application-origin warnings or errors; the known extension-origin error recurred and remains tracked in ERR-20260825-11.
+
+### Current State
+
+Phase 04 is complete. `/projects` and the published fixture detail route work as static pages; draft, invalid, duplicate, and missing content are handled predictably. Real OhMyPos narrative, product metrics, demo/repository evidence links, search, filtering, pagination, CMS, and other projects remain out of scope.
+
+### Handoff Notes
+
+Phase 05 should replace the public implementation fixture with approved `ohmypos` content rather than relaxing the metadata or section validator. Preserve the metric context and public-destination evidence contract from `docs/project-brief.md`. Adding another MDX component requires updating both the component map and source allowlist deliberately.
+
+### Open Threads
+
+- Replace the transparent Phase 04 fixture when Phase 05 publishes the approved OhMyPos case study.
+
+### Related Logs
+
+- **Errors:** ERR-20260826-01, ERR-20260826-02, ERR-20260825-11.
+- **Tech debt:** DEBT-20260826-01; DEBT-20260825-06 (resolved).
+
 ## TASK-20260825-07 — Publish Approved Contact and Resume Destinations
 
 - **Timestamp:** 2026-08-25T23:43:36+07:00

@@ -110,7 +110,7 @@ Referensi karakter visual: produk developer tools seperti Linear, Vercel, dan Ra
 ## 6. Kontrak Implementasi
 
 - Target struktur menggunakan `app/`, `components/`, dan `content/projects/` sebagaimana ditetapkan di `AGENTS.md`.
-- Gunakan atau komposisikan shadcn/ui jika primitive-nya sesuai. Native semantic HTML tetap diperbolehkan.
+- Gunakan atau komposisikan shadcn/ui untuk setiap reusable visual/action primitive yang memiliki padanan sesuai; jangan membuat ulang card, badge, separator, alert, atau button dengan native styled markup. Native semantic HTML tetap digunakan untuk struktur dokumen dan inline content yang tidak memiliki padanan shadcn yang tepat.
 - Gunakan Tailwind utilities. `globals.css` hanya untuk token global, reset, dan aturan yang tidak wajar jika diekspresikan sebagai utility.
 - Simpan warna dan spacing dalam token terpusat; jangan menyebarkan nilai hard-coded berulang di komponen.
 - Prefer Server Components dan batasi `"use client"` pada boundary yang benar-benar memerlukan state, event handler, atau browser API.
@@ -163,3 +163,4 @@ Keputusan Phase 01 untuk accent, status CV, tautan publik OhMyPos, fallback hook
 - CV publik, email, LinkedIn, dan personal GitHub telah disetujui pada 2026-08-25. Tampilkan hanya destinasi persis yang tercatat di atas; route `/resume` tetap tidak disetujui.
 - Metric tambahan untuk OhMyPos atau project lain tetap memerlukan evidence contract dan persetujuan copy secara terpisah.
 - **Phase 02 selesai pada 2026-08-25.** Foundation Next.js, theme tokens, shadcn-compatible primitive, dan controlled MDX pipeline telah tervalidasi sebelum Phase 03 dimulai.
+- **Phase 04 selesai pada 2026-08-26.** `/projects`, static project detail, validated seven-section MDX contract, draft filtering, constrained components, dan reusable stat block telah tervalidasi. Konten publik masih berupa fixture transparan; Phase 05 tetap memiliki publikasi narrative OhMyPos.

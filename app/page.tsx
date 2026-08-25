@@ -1,6 +1,18 @@
 import Link from "next/link";
 
 import { PageContainer } from "@/components/page-container";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 export default function Home() {
   return (
@@ -24,34 +36,39 @@ export default function Home() {
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
-              <a
-                href="https://github.com/yerikhowilliamt/ohmypos"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Inspect OhMyPos source (opens in a new tab)"
-                className="inline-flex min-h-11 items-center justify-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover active:bg-primary-active"
-              >
-                Inspect OhMyPos source
-              </a>
-              <Link
-                href="/about"
-                className="inline-flex min-h-11 items-center justify-center rounded-md border px-5 text-sm font-semibold transition-colors hover:bg-accent"
-              >
-                Read the approach
-              </Link>
+              <Button asChild size="lg">
+                <a
+                  href="https://github.com/yerikhowilliamt/ohmypos"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Inspect OhMyPos source (opens in a new tab)"
+                >
+                  Inspect OhMyPos source
+                </a>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <Link href="/about">Read the approach</Link>
+              </Button>
             </div>
           </div>
 
-          <aside aria-label="Portfolio reading guide" className="border-l border-primary pl-5 font-mono text-xs leading-6 text-muted-foreground">
-            <p className="text-primary">EVIDENCE_LEDGER</p>
-            <p>01 / verified outcome</p>
-            <p>02 / implementation trade-off</p>
-            <p>03 / public technical evidence</p>
+          <aside aria-label="Portfolio reading guide">
+            <Alert role="note">
+              <AlertTitle>EVIDENCE_LEDGER</AlertTitle>
+              <AlertDescription>
+                <ol className="font-mono text-xs leading-6">
+                  <li>01 / verified outcome</li>
+                  <li>02 / implementation trade-off</li>
+                  <li>03 / public technical evidence</li>
+                </ol>
+              </AlertDescription>
+            </Alert>
           </aside>
         </section>
       </PageContainer>
 
-      <section aria-labelledby="featured-work-title" className="border-y bg-card">
+      <Separator />
+      <section aria-labelledby="featured-work-title">
         <PageContainer className="py-14 sm:py-20">
           <div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr]">
             <div className="flex flex-col gap-4">
@@ -67,61 +84,70 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="flex flex-col gap-6">
-              <dl className="grid border sm:grid-cols-3">
-                <div className="flex flex-col gap-2 border-b p-5 sm:border-r sm:border-b-0">
-                  <dt className="font-mono text-xs text-muted-foreground uppercase">Requests</dt>
-                  <dd className="font-mono text-3xl font-semibold text-primary">30</dd>
-                </div>
-                <div className="flex flex-col gap-2 border-b p-5 sm:border-r sm:border-b-0">
-                  <dt className="font-mono text-xs text-muted-foreground uppercase">Resolved</dt>
-                  <dd className="font-mono text-3xl font-semibold">15 / 15</dd>
-                  <dd className="text-xs text-muted-foreground">successes / conflicts</dd>
-                </div>
-                <div className="flex flex-col gap-2 p-5">
-                  <dt className="font-mono text-xs text-muted-foreground uppercase">Server errors</dt>
-                  <dd className="font-mono text-3xl font-semibold text-primary">0</dd>
-                </div>
-              </dl>
-              <p className="text-sm leading-6 text-muted-foreground">
-                30 concurrent settlement requests against a single payable resolved into exactly 15
-                successes and 15 conflicts — final balance Rp0.00, zero server errors. This is a
-                bounded correctness result from the recorded test scenario, not a latency or
-                production-traffic claim.
-              </p>
-              <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold">
-                <a
-                  href="https://ohmypos.vercel.app"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Live demo (opens in a new tab)"
-                  className="text-primary underline-offset-4 hover:text-primary-hover hover:underline"
-                >
-                  Live demo
-                </a>
-                <a
-                  href="https://github.com/yerikhowilliamt/ohmypos/blob/main/docs/02%20-%20ADR.md"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Architecture decisions (opens in a new tab)"
-                  className="text-primary underline-offset-4 hover:text-primary-hover hover:underline"
-                >
-                  Architecture decisions
-                </a>
-                <a
-                  href="https://github.com/yerikhowilliamt/ohmypos/tree/main/docs"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Project documentation (opens in a new tab)"
-                  className="text-primary underline-offset-4 hover:text-primary-hover hover:underline"
-                >
-                  Project documentation
-                </a>
-              </div>
-            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Recorded concurrency scenario</CardTitle>
+                <CardDescription>
+                  30 concurrent settlement requests against a single payable resolved into exactly
+                  15 successes and 15 conflicts — final balance Rp0.00, zero server errors. This is
+                  a bounded correctness result from the recorded test scenario, not a latency or
+                  production-traffic claim.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <dl className="grid gap-6 sm:grid-cols-3">
+                  <div className="flex flex-col gap-2">
+                    <dt><Badge variant="technical">Requests</Badge></dt>
+                    <dd className="font-mono text-3xl font-semibold text-primary">30</dd>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <dt><Badge variant="technical">Resolved</Badge></dt>
+                    <dd className="font-mono text-3xl font-semibold">15 / 15</dd>
+                    <dd className="text-xs text-muted-foreground">successes / conflicts</dd>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <dt><Badge variant="technical">Server errors</Badge></dt>
+                    <dd className="font-mono text-3xl font-semibold text-primary">0</dd>
+                  </div>
+                </dl>
+              </CardContent>
+              <CardFooter className="flex-wrap gap-1">
+                <Button asChild variant="link" size="sm">
+                  <a
+                    href="https://ohmypos.vercel.app"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Live demo (opens in a new tab)"
+                  >
+                    Live demo
+                  </a>
+                </Button>
+                <Button asChild variant="link" size="sm">
+                  <a
+                    href="https://github.com/yerikhowilliamt/ohmypos/blob/main/docs/02%20-%20ADR.md"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Architecture decisions (opens in a new tab)"
+                  >
+                    Architecture decisions
+                  </a>
+                </Button>
+                <Button asChild variant="link" size="sm">
+                  <a
+                    href="https://github.com/yerikhowilliamt/ohmypos/tree/main/docs"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Project documentation (opens in a new tab)"
+                  >
+                    Project documentation
+                  </a>
+                </Button>
+              </CardFooter>
+            </Card>
           </div>
         </PageContainer>
       </section>
+      <Separator />
     </main>
   );
 }

@@ -18,7 +18,7 @@ describe("shared site shell", () => {
   });
 
   it("renders the four primary navigation items and approved Resume CTA", () => {
-    render(<SiteHeader />);
+    const { container } = render(<SiteHeader />);
 
     const navigation = screen.getByRole("navigation", { name: "Primary navigation" });
     expect(navigation).toHaveTextContent("Home");
@@ -29,6 +29,8 @@ describe("shared site shell", () => {
       "href",
       "/CV_YERIKHO_WILLIAM_TASILIMA_public.pdf",
     );
+    expect(container.querySelectorAll('[data-slot="button"]')).toHaveLength(6);
+    expect(container.querySelectorAll('[data-slot="separator"]')).toHaveLength(1);
   });
 
   it("marks the current route and preserves approved destinations", () => {
@@ -38,7 +40,7 @@ describe("shared site shell", () => {
     expect(screen.getByRole("link", { name: "About" })).toHaveAttribute("aria-current", "page");
     unmount();
 
-    render(<SiteFooter />);
+    const { container } = render(<SiteFooter />);
     expect(screen.getByRole("link", { name: /GitHub/ })).toHaveAttribute(
       "href",
       "https://github.com/yerikhowilliamt",
@@ -47,5 +49,7 @@ describe("shared site shell", () => {
       "href",
       "https://www.linkedin.com/in/yerikhowilliamt",
     );
+    expect(container.querySelectorAll('[data-slot="button"]')).toHaveLength(2);
+    expect(container.querySelectorAll('[data-slot="separator"]')).toHaveLength(1);
   });
 });
