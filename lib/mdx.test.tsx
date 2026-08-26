@@ -84,8 +84,25 @@ describe("project MDX content system", () => {
   it("filters drafts from public discovery and lookup", async () => {
     const published = await getPublishedProjects();
 
-    expect(published.map(({ slug }) => slug)).toEqual(["project-system-demo"]);
+    expect(published.map(({ slug }) => slug)).toEqual(["ohmypos"]);
     await expect(getProjectBySlug("draft-project")).resolves.toBeUndefined();
+    await expect(getProjectBySlug("project-system-demo")).resolves.toBeUndefined();
+  });
+
+  it("blocks unresolved required placeholders from published content", async () => {
+    const sections = REQUIRED_SECTION_TITLES.map(
+      (title) => `## ${title}\n\nContent.`,
+    ).join("\n\n");
+
+    await expect(
+      compileProjectMdx(projectSource({ body: `${sections}\n\n[METRIC REQUIRED]` })),
+    ).rejects.toBeInstanceOf(InvalidProjectContentError);
+
+    await expect(
+      compileProjectMdx(
+        projectSource({ status: "draft", body: `${sections}\n\n[METRIC REQUIRED]` }),
+      ),
+    ).resolves.toMatchObject({ frontmatter: { status: "draft" } });
   });
 
   it("rejects malformed slugs and reports unknown content predictably", async () => {

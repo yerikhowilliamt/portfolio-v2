@@ -1,0 +1,82 @@
+---
+slug: ohmypos
+title: OhMyPos
+summary: A multi-branch POS system built to keep sales, inventory, and financial ledgers consistent under concurrent transactions.
+hook: "30 concurrent settlement requests against a single payable resolved into exactly 15 successes and 15 conflicts — final balance Rp0.00, zero server errors."
+stack:
+  - TypeScript
+  - NestJS
+  - Prisma
+  - PostgreSQL
+status: published
+order: 1
+---
+
+## Hook
+
+A multi-branch POS system built to keep sales, inventory, and financial ledgers consistent under concurrent transactions.
+
+> 30 concurrent settlement requests against a single payable resolved into exactly 15 successes and 15 conflicts — final balance Rp0.00, zero server errors.
+
+This is a bounded correctness result from a controlled verification scenario. It is not a latency, throughput, scalability, or production-traffic claim.
+
+## Problem
+
+The verified scenario isolates one financial-integrity risk: multiple partial-settlement requests can compete for the same payable before any one request observes the others' writes. The required outcome was not simply a successful response. The payable balance, settlement history, and financial ledger all had to agree after every competing request finished.
+
+The test started with one unpaid Rp300,000.00 supplier purchase and payable, then submitted 30 authenticated OWNER requests of Rp20,000.00 each. Only 15 requests could be accepted without settling more than the outstanding balance.
+
+## Key Decisions & Trade-offs
+
+### Protect the payable with a pessimistic row lock
+
+The settlement path uses `SELECT ... FOR UPDATE` so competing writes against the same payable are serialized before its balance changes. Requests that arrive after the balance is exhausted return a conflict instead of creating an over-settlement.
+
+The trade-off is deliberate contention on a single payable row. This case study treats financial consistency as the requirement; it does not use the result to claim high throughput.
+
+### Bound the verification harness
+
+The 30 request factories were dispatched through `settleAllChunked` with a chunk size of five and collected with `Promise.allSettled`. The chunking avoided client-runner socket drops, while the database lock still protected the shared payable state.
+
+This makes the result reproducible within the recorded environment, but it also narrows what the run proves: application and database correctness for this scenario, not 30 unrestricted network connections or production load.
+
+## Measured Results
+
+<StatBlock
+  label="Concurrent settlement integrity"
+  value="15 × 201 / 15 × 409"
+  context="30 authenticated Rp20,000.00 requests competed against one Rp300,000.00 payable; the final balance was Rp0.00 with SETTLED status and zero 5xx responses."
+  qualifier="Verified on 22 August 2026 with Node.js, NestJS 11, Prisma 7.9.1, TypeScript, PostgreSQL 16 at default Read Committed isolation, Jest, and Supertest over loopback TCP. Hardware and the exact Node.js version were not recorded."
+/>
+
+Post-run database checks found 15 settlement rows and 15 `PAYABLE_SETTLEMENT` ledger entries totaling Rp300,000.00. No request promise was rejected, and no response was a server error.
+
+## What This Demonstrates
+
+- Defining a concurrency invariant across the HTTP result, payable state, settlement history, and ledger.
+- Choosing database-level locking for a correctness-sensitive write path and stating its contention trade-off explicitly.
+- Verifying the final PostgreSQL state instead of treating response codes alone as proof.
+- Reporting a result with its workload, environment, method, date, and known measurement gaps.
+
+## Limitations & Next Steps
+
+- This is one synthetic settlement scenario executed through Jest and Supertest over loopback TCP, not production traffic.
+- The chunk size was five because unbounded dispatch caused client-runner socket drops; the run is not evidence of 30 full simultaneous network connections.
+- Hardware and the exact Node.js version were not recorded, so the result cannot support cross-environment performance comparisons.
+- The evidence proves a bounded correctness outcome. Latency, throughput, broader scalability, and other OhMyPos workflows require separately approved measurements before publication.
+
+## Technical Evidence
+
+The concurrency result can be inspected in the public repository:
+
+- [B4 concurrency test](https://github.com/yerikhowilliamt/ohmypos/blob/main/apps/api/test/concurrency.e2e-spec.ts#L737-L817)
+- [Phase 14 verification task](https://github.com/yerikhowilliamt/ohmypos/blob/main/docs/07%20-%20Task_Log.md#L408)
+- [Recorded concurrency debt and boundary](https://github.com/yerikhowilliamt/ohmypos/blob/main/docs/08%20-%20Tech_Debt_Log.md#L577-L588)
+
+Public project entry points and design records:
+
+- [Live demo](https://ohmypos.vercel.app)
+- [Source repository](https://github.com/yerikhowilliamt/ohmypos)
+- [Product requirements](https://github.com/yerikhowilliamt/ohmypos/blob/main/docs/00%20-%20PRD.md)
+- [Architecture decisions](https://github.com/yerikhowilliamt/ohmypos/blob/main/docs/02%20-%20ADR.md)
+- [Project documentation](https://github.com/yerikhowilliamt/ohmypos/tree/main/docs)

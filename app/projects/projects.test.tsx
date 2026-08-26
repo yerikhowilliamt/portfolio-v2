@@ -16,26 +16,30 @@ describe("Phase 04 project routes", () => {
     expect(
       screen.getByRole("heading", { level: 1, name: "Engineering decisions, constraints, and proof." }),
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Project System Demonstration" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "OhMyPos" })).toHaveAttribute(
       "href",
-      "/projects/project-system-demo",
+      "/projects/ohmypos",
     );
+    expect(screen.queryByText("Project System Demonstration")).not.toBeInTheDocument();
     expect(screen.queryByText("Draft Project Fixture")).not.toBeInTheDocument();
+    expect(
+      screen.getByAltText(/OhMyPos cashier interface showing branch selection/),
+    ).toBeInTheDocument();
   });
 
   it("generates params and metadata for published projects only", async () => {
-    await expect(generateStaticParams()).resolves.toEqual([{ slug: "project-system-demo" }]);
+    await expect(generateStaticParams()).resolves.toEqual([{ slug: "ohmypos" }]);
     await expect(
-      generateMetadata({ params: Promise.resolve({ slug: "project-system-demo" }) }),
+      generateMetadata({ params: Promise.resolve({ slug: "ohmypos" }) }),
     ).resolves.toMatchObject({
-      title: "Project System Demonstration",
-      description: expect.stringContaining("transparent fixture"),
+      title: "OhMyPos",
+      description: expect.stringContaining("financial ledgers consistent"),
     });
   });
 
   it("renders the seven required sections in exact order", async () => {
     const { container } = render(
-      await ProjectPage({ params: Promise.resolve({ slug: "project-system-demo" }) }),
+      await ProjectPage({ params: Promise.resolve({ slug: "ohmypos" }) }),
     );
     const headings = Array.from(
       container.querySelectorAll("h2"),
@@ -55,7 +59,20 @@ describe("Phase 04 project routes", () => {
       Array.from(container.querySelectorAll("h2"), (heading) => heading.id),
     );
     expect(screen.getByRole("navigation", { name: "Case study sections" })).toBeInTheDocument();
-    expect(container.querySelector("dt")).toHaveTextContent("Evidence state");
-    expect(container.querySelector("dt + dd")).toHaveTextContent("Fixture");
+    expect(
+      screen.getByRole("region", { name: "OhMyPos interface gallery" }),
+    ).toBeInTheDocument();
+    expect(screen.getAllByRole("img")).toHaveLength(3);
+    expect(container.querySelector("dt")).toHaveTextContent("Concurrent settlement integrity");
+    expect(container.querySelector("dt + dd")).toHaveTextContent("15 × 201 / 15 × 409");
+    expect(screen.getByText(/15 settlement rows/)).toHaveTextContent("Rp300,000.00");
+    expect(screen.getByRole("link", { name: /B4 concurrency test/ })).toHaveAttribute(
+      "href",
+      "https://github.com/yerikhowilliamt/ohmypos/blob/main/apps/api/test/concurrency.e2e-spec.ts#L737-L817",
+    );
+    expect(screen.getByRole("link", { name: /Live demo/ })).toHaveAttribute(
+      "href",
+      "https://ohmypos.vercel.app",
+    );
   });
 });

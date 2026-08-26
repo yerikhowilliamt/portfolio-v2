@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { PageContainer } from "@/components/page-container";
+import { ProjectScreenshot } from "@/components/project-screenshot";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { getProjectVisuals } from "@/lib/project-visuals";
 
 const capabilities = [
   {
@@ -35,6 +37,8 @@ const capabilities = [
 ] as const;
 
 export default function Home() {
+  const ohmyposVisuals = getProjectVisuals("ohmypos");
+
   return (
     <main id="main-content">
       <PageContainer className="py-16 sm:py-24 lg:py-28">
@@ -81,35 +85,14 @@ export default function Home() {
             </div>
           </div>
 
-          <Card className="lg:col-span-5">
-            <CardHeader className="gap-4">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <Badge variant="technical">Verified scenario</Badge>
-                <span className="font-mono text-xs text-muted-foreground">OHMYPOS / CONCURRENCY</span>
-              </div>
-              <CardTitle className="text-2xl">Settlement integrity under contention</CardTitle>
-              <CardDescription>
-                A bounded end-to-end result from one recorded test scenario—not a production
-                traffic or latency claim.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <dl className="grid grid-cols-3 gap-4">
-                <div className="flex flex-col gap-2">
-                  <dt className="text-xs text-muted-foreground">Requests</dt>
-                  <dd className="font-mono text-3xl font-semibold text-primary sm:text-4xl">30</dd>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <dt className="text-xs text-muted-foreground">Resolved</dt>
-                  <dd className="font-mono text-3xl font-semibold sm:text-4xl">15/15</dd>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <dt className="text-xs text-muted-foreground">Errors</dt>
-                  <dd className="font-mono text-3xl font-semibold text-primary sm:text-4xl">0</dd>
-                </div>
-              </dl>
-            </CardContent>
-          </Card>
+          {ohmyposVisuals ? (
+            <ProjectScreenshot
+              visual={ohmyposVisuals.primary}
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              priority
+              className="lg:col-span-5"
+            />
+          ) : null}
         </section>
       </PageContainer>
 
