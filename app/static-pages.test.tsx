@@ -19,11 +19,13 @@ describe("redesigned static routes", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("Yerikho William Tasilima")).toBeInTheDocument();
     expect(screen.getByText("Software Engineer")).toBeInTheDocument();
-    expect(screen.getByText("15/15")).toBeInTheDocument();
+    expect(
+      screen.getByAltText(/OhMyPos cashier interface showing branch selection/),
+    ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "View selected work" })).toHaveAttribute("href", "#selected-work");
     expect(container.querySelectorAll('[data-slot="button"]')).toHaveLength(9);
-    expect(container.querySelectorAll('[data-slot="card"]')).toHaveLength(3);
-    expect(container.querySelectorAll('[data-slot="badge"]')).toHaveLength(10);
+    expect(container.querySelectorAll('[data-slot="card"]')).toHaveLength(2);
+    expect(container.querySelectorAll('[data-slot="badge"]')).toHaveLength(9);
     expect(container.querySelectorAll('[data-slot="separator"]')).toHaveLength(7);
   });
 

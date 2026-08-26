@@ -46,6 +46,234 @@ Conditions under which the error could recur, or `None known`.
 
 ## Entries
 
+## ERR-20260827-03 — Primary Screenshot Triggered a Next Image LCP Advisory
+
+- **Timestamp:** 2026-08-27T00:04:19+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260827-01
+- **Area:** `components/project-screenshot.tsx` and browser performance validation.
+
+### What Happened
+
+Desktop Home QA reported that `03-pos-active-cart.png` was detected as the Largest Contentful Paint image and recommended adding `loading="eager"` because it appears above the fold.
+
+### Reproduction
+
+1. Render Home at 1440×900 with the active-cart screenshot in the hero.
+2. Inspect the Next.js development console and observe the LCP image advisory.
+
+### Root Cause
+
+The screenshot composition passed the deprecated `priority` prop, which preloaded the image but did not emit the explicit eager-loading attribute checked by this Next.js 16 development warning.
+
+### Resolution or Workaround
+
+Mapped the composition's priority state to Next.js 16's `preload` prop and `loading="eager"`. A clean browser tab then rendered the image eagerly with no application image warning; secondary gallery images remained lazy.
+
+### Why This Approach
+
+Only the above-the-fold image receives eager loading, preserving lazy loading for secondary visual evidence while following the installed framework API.
+
+### Residual Risk
+
+None known.
+
+### Related Files and Logs
+
+- **Files:** `components/project-screenshot.tsx`
+- **Tech debt:** None.
+
+## ERR-20260827-02 — Gallery Visual Lookup Was Declared in Metadata Generation
+
+- **Timestamp:** 2026-08-27T00:04:19+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260827-01
+- **Area:** `app/projects/[slug]/page.tsx`.
+
+### What Happened
+
+The focused project-detail test failed with `ReferenceError: visuals is not defined` when the page renderer reached the interface-gallery condition.
+
+### Reproduction
+
+1. Render `ProjectPage` for the published `ohmypos` slug.
+2. Observe the undefined `visuals` binding at the gallery branch.
+
+### Root Cause
+
+The initial patch inserted `getProjectVisuals(slug)` into `generateMetadata` instead of the similarly shaped `ProjectPage` setup block.
+
+### Resolution or Workaround
+
+Removed the unused metadata binding and declared it in `ProjectPage` after the project lookup. The focused and full test suites then passed.
+
+### Why This Approach
+
+The gallery is render-only state and does not belong in metadata generation.
+
+### Residual Risk
+
+None known.
+
+### Related Files and Logs
+
+- **Files:** `app/projects/[slug]/page.tsx`
+- **Tech debt:** None.
+
+## ERR-20260827-01 — Vitest PNG Imports Did Not Provide Intrinsic Image Dimensions
+
+- **Timestamp:** 2026-08-27T00:04:19+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260827-01
+- **Area:** `lib/project-visuals.ts`, `components/project-screenshot.tsx`, and route rendering tests.
+
+### What Happened
+
+The focused Home and Projects tests failed with `Image with src "/docs/portfolio-screenshots/ohmypos/03-pos-active-cart.png" is missing required "width" property.`
+
+### Reproduction
+
+1. Import a local PNG through the Vitest asset transformer and pass it to Next Image without explicit dimensions.
+2. Render Home or Projects and observe Next Image reject the string URL fixture.
+
+### Root Cause
+
+The production bundler provides `StaticImageData`, but Vitest transforms the same PNG import into a URL string without intrinsic width and height metadata.
+
+### Resolution or Workaround
+
+Recorded each selected screenshot's verified 1440×900 dimensions in the project visual map and passed them explicitly to Next Image. Focused tests then passed, and the production build still optimized the static imports.
+
+### Why This Approach
+
+Explicit dimensions preserve stable layout and make the composition behave consistently in production and tests without mocking Next Image.
+
+### Residual Risk
+
+New screenshots with different dimensions must record their actual width and height in the visual map.
+
+### Related Files and Logs
+
+- **Files:** `lib/project-visuals.ts`, `components/project-screenshot.tsx`
+- **Tech debt:** None.
+
+## ERR-20260826-21 — Port 3000 Served an Unrelated Local Application
+
+- **Timestamp:** 2026-08-26T21:59:21+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260826-10
+- **Area:** Local browser QA target.
+
+### What Happened
+
+The first browser navigation to `http://localhost:3000/projects` displayed an Indofund application 404 rather than this portfolio.
+
+### Reproduction
+
+1. Navigate the connected browser to `http://localhost:3000/projects` while the unrelated local service owns port 3000.
+2. Observe the foreign site shell and `404 Not Found` heading.
+
+### Root Cause
+
+The prior QA record that identified port 3000 as this repository's running dev server was stale; another local application currently owns that port.
+
+### Resolution or Workaround
+
+Left the unrelated process untouched, started this repository on dedicated port 4173, and repeated all browser checks against `http://127.0.0.1:4173`.
+
+### Why This Approach
+
+A dedicated port gives deterministic route evidence without stopping or changing a user-owned process.
+
+### Residual Risk
+
+Never infer a localhost port's project identity from an earlier session; verify the visible shell before accepting QA evidence.
+
+### Related Files and Logs
+
+- **Files:** None.
+- **Tech debt:** None.
+
+## ERR-20260826-20 — Web Link Verifier Could Not Fetch Approved Destinations
+
+- **Timestamp:** 2026-08-26T21:59:21+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260826-10
+- **Area:** Public evidence-link validation tooling.
+
+### What Happened
+
+The web fetch returned `URL ... is not safe to open` for the demo and `Cache miss` for the GitHub destinations, so it produced no valid destination evidence.
+
+### Reproduction
+
+1. Submit the eight approved Phase 01 URLs to the web opener.
+2. Observe the internal safety/cache errors instead of page responses.
+
+### Root Cause
+
+The web tool could not resolve uncached direct URLs in that request. The destinations themselves were not proven faulty.
+
+### Resolution or Workaround
+
+Repeated the checks with direct followed HTTP requests. All eight destinations returned HTTP 200, and the demo resolved to its public login entry point.
+
+### Why This Approach
+
+Direct status checks answer the Phase 05 link-availability requirement without changing the approved destinations.
+
+### Residual Risk
+
+Public availability can change after this 2026-08-26 check and should be revalidated before deployment.
+
+### Related Files and Logs
+
+- **Files:** `docs/phase-05-claim-evidence-checklist.md`
+- **Tech debt:** None.
+
+## ERR-20260826-19 — Unquoted Dynamic Route Path Expanded as a Shell Glob
+
+- **Timestamp:** 2026-08-26T21:59:21+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260826-10
+- **Area:** Repository inspection command.
+
+### What Happened
+
+An inspection command failed with `zsh:1: no matches found: app/projects/[slug]/page.tsx` before reading the intended route and test files.
+
+### Reproduction
+
+1. Pass `app/projects/[slug]/page.tsx` unquoted to zsh.
+2. Observe zsh interpreting `[slug]` as a filename pattern.
+
+### Root Cause
+
+The dynamic route path was not quoted, so zsh treated the square brackets as glob syntax.
+
+### Resolution or Workaround
+
+Quoted the path and reran the focused inspection successfully.
+
+### Why This Approach
+
+Quoting preserves the literal Next.js route name and avoids disabling useful shell glob checks globally.
+
+### Residual Risk
+
+Future commands that reference bracketed App Router segments must quote those paths.
+
+### Related Files and Logs
+
+- **Files:** `app/projects/[slug]/page.tsx`
+- **Tech debt:** None.
+
 ## ERR-20260826-18 — Browser QA Helpers Used Unsupported Syntax and Wait State
 
 - **Timestamp:** 2026-08-26T08:38:24+07:00
@@ -89,12 +317,12 @@ Future browser scripts should remain plain JavaScript and avoid `networkidle` in
 - **Timestamp:** 2026-08-26T08:38:24+07:00
 - **Status:** Workaround
 - **Severity:** Low
-- **Task:** TASK-20260826-08
+- **Task:** TASK-20260826-08, TASK-20260827-01
 - **Area:** Local browser QA server.
 
 ### What Happened
 
-`npm run dev` first failed with `listen EPERM` in the sandbox. The network-enabled retry announced port 3001, then exited because an existing repository dev server held the Next.js lock. Browser navigation to 3001 returned `ERR_CONNECTION_REFUSED`, while the existing server remained available to the browser at port 3000.
+`npm run dev` first failed with `listen EPERM` in the sandbox. The network-enabled retry announced port 3001, then exited because an existing repository dev server held the Next.js lock. Browser navigation to 3001 returned `ERR_CONNECTION_REFUSED`, while the existing server remained available to the browser at port 3000. TASK-20260827-01 repeated the same sequence on requested port 4173 before reusing the verified portfolio server at port 3000.
 
 ### Reproduction
 
@@ -318,7 +546,7 @@ Future shadcn registry calls in this environment may continue to require network
 - **Timestamp:** 2026-08-26T08:09:02+07:00
 - **Status:** Resolved
 - **Severity:** Low
-- **Task:** TASK-20260826-06
+- **Task:** TASK-20260826-06, TASK-20260826-10, TASK-20260827-01
 - **Area:** Generated Next.js type declaration.
 
 ### What Happened
@@ -332,11 +560,11 @@ Final documentation diff inspection found `next-env.d.ts` changed from the repos
 
 ### Root Cause
 
-The running Next.js development environment regenerated `next-env.d.ts` for its dev type output.
+The running Next.js development environment regenerated `next-env.d.ts` for its dev type output. The same behavior recurred during TASK-20260826-10 and was present again at the start of TASK-20260827-01 while the existing development server was active.
 
 ### Resolution or Workaround
 
-Restored the two generated import paths to the current repository version with a focused patch and verified that `next-env.d.ts` no longer appears in the final diff.
+Restored the two generated import paths to the current repository version with a focused patch in each task and verified that `next-env.d.ts` no longer appears in the final diff.
 
 ### Why This Approach
 
@@ -703,12 +931,12 @@ None known.
 - **Timestamp:** 2026-08-26T00:12:17+07:00
 - **Status:** Resolved
 - **Severity:** Low
-- **Task:** TASK-20260826-01
+- **Task:** TASK-20260826-01, TASK-20260826-10
 - **Area:** Initial Phase 04 `apply_patch` operations.
 
 ### What Happened
 
-Two attempted combined patches were rejected with `invalid patch: multiple operations target ...` because each tried to delete and add the same existing file in one patch. Neither rejected patch changed repository files.
+Two Phase 04 patches and one Phase 05 log patch were rejected with `invalid patch: multiple operations target ...` because each attempted more than one operation against the same path. None of the rejected patches changed repository files.
 
 ### Reproduction
 
@@ -721,7 +949,7 @@ The patch format does not accept multiple operations against the same path in on
 
 ### Resolution or Workaround
 
-Separated deletion from creation, then applied the remaining task-scoped changes normally.
+Separated the repeated file operations into one operation per path, then applied the remaining task-scoped changes normally.
 
 ### Why This Approach
 
@@ -733,7 +961,7 @@ None known.
 
 ### Related Files and Logs
 
-- **Files:** `lib/mdx.ts`, `lib/mdx.test.tsx`
+- **Files:** `lib/mdx.ts`, `lib/mdx.test.tsx`, `docs/error-log.md`
 - **Tech debt:** None.
 
 ## ERR-20260825-19 — LinkedIn Returned Anti-Bot HTTP 999
@@ -1047,7 +1275,7 @@ The incompatibility is resolved. The compatible version's maintenance status rem
 - **Timestamp:** 2026-08-25T20:40:27+07:00
 - **Status:** Workaround
 - **Severity:** Low
-- **Task:** TASK-20260825-05, TASK-20260825-06, TASK-20260826-01, TASK-20260826-02, TASK-20260826-03, TASK-20260826-04, TASK-20260826-05, TASK-20260826-06
+- **Task:** TASK-20260825-05, TASK-20260825-06, TASK-20260826-01, TASK-20260826-02, TASK-20260826-03, TASK-20260826-04, TASK-20260826-05, TASK-20260826-06, TASK-20260826-10, TASK-20260827-01
 - **Area:** Browser console validation.
 
 ### What Happened
@@ -1065,7 +1293,7 @@ A Chrome extension content script failed independently of the localhost applicat
 
 ### Resolution or Workaround
 
-Excluded the extension error from application results while retaining it in the validation record. It recurred during TASK-20260825-06 at each local route check; every captured URL remained extension-owned and no application-origin warning or error was present.
+Excluded the extension error from application results while retaining it in the validation record. It recurred during TASK-20260825-06, TASK-20260826-10, and TASK-20260827-01; every captured URL remained extension-owned and no application-origin error was present.
 
 ### Why This Approach
 

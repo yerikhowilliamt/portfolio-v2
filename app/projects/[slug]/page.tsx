@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PageContainer } from "@/components/page-container";
+import { ProjectScreenshot } from "@/components/project-screenshot";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +14,7 @@ import {
   InvalidProjectSlugError,
   REQUIRED_SECTION_TITLES,
 } from "@/lib/mdx";
+import { getProjectVisuals } from "@/lib/project-visuals";
 
 type ProjectPageProps = { params: Promise<{ slug: string }> };
 
@@ -47,6 +49,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const { slug } = await params;
   const project = await resolveProject(slug);
   if (!project) notFound();
+  const visuals = getProjectVisuals(slug);
 
   return (
     <main id="main-content">
@@ -76,6 +79,28 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               </ul>
             </div>
           </header>
+
+          {visuals ? (
+            <section
+              aria-label={`${project.frontmatter.title} interface gallery`}
+              className="mt-12 flex flex-col gap-6"
+            >
+              <ProjectScreenshot
+                visual={visuals.primary}
+                sizes="(min-width: 1280px) 1200px, 100vw"
+                priority
+              />
+              <div className="grid gap-6 md:grid-cols-2">
+                {visuals.secondary.map((visual) => (
+                  <ProjectScreenshot
+                    key={visual.caption}
+                    visual={visual}
+                    sizes="(min-width: 1280px) 588px, (min-width: 768px) 50vw, 100vw"
+                  />
+                ))}
+              </div>
+            </section>
+          ) : null}
 
           <Separator className="my-12" />
           <div className="grid gap-12 lg:grid-cols-12">

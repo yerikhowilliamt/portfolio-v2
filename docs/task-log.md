@@ -50,6 +50,132 @@ Non-obvious assumptions, fragile areas, manual steps, and what the next AI mode/
 
 ## Entries
 
+## TASK-20260827-01 — Integrate User-Supplied OhMyPos Screenshots
+
+- **Timestamp:** 2026-08-27T00:04:19+07:00
+- **Status:** Complete
+- **Request:** Use the OhMyPos project screenshots supplied under the repository documentation folder.
+- **Scope:** Screenshot safety review, image selection, reusable screenshot composition, Home hero proof, Projects card visual, OhMyPos detail gallery, regression coverage, build, responsive visual QA, and continuity logs.
+
+### Summary
+
+Integrated authentic OhMyPos interface screenshots into the recruiter-facing portfolio. The POS active-cart screen now replaces the Home metric-panel fallback and leads the Projects card, while the case-study detail adds a three-image gallery with the dashboard and product/recipe views. All published images use `next/image`, stable dimensions, factual captions, and descriptive alternatives.
+
+### What Changed
+
+- Added `lib/project-visuals.ts` as the project-to-visual mapping for the three selected user-supplied assets without changing the MDX content schema.
+- Added `components/project-screenshot.tsx` as a semantic `figure`/`figcaption` composition over `next/image`, supporting framed and embedded presentation.
+- Replaced the Home proof fallback with the active-cart screenshot and preserved the approved written concurrency result in the selected-work section.
+- Added the primary screenshot to the OhMyPos Projects card and a primary-plus-two-secondary gallery to `/projects/ohmypos`.
+- Added factual alt text and captions that describe visible interface structure without promoting screenshot values as measured portfolio outcomes.
+- Updated Home and project-route tests for image presence, gallery semantics, and the revised Card/Badge composition counts.
+- Updated the Phase 05 evidence checklist with the user-supplied visual source, selected files, and publication boundary.
+
+### Key Decisions
+
+- **Decision:** Publish `03-pos-active-cart.png`, `02-dashboard-overview.png`, and `11-master-data-products.png` only.
+  - **Reasoning:** These provide the strongest sales-to-operations narrative without exposing the names and email addresses visible in the RBAC screenshot or repeating the login screen's sample credential and security-marketing copy.
+  - **ADR:** Not required.
+- **Decision:** Import images directly from `docs/portfolio-screenshots/ohmypos/` through a project visual map.
+  - **Reasoning:** Static imports let Next.js optimize the supplied files without duplicating assets under `public/` or changing the approved MDX schema.
+  - **ADR:** Not required.
+- **Decision:** Use one screenshot as the repeated visual signature and reserve secondary views for the detail page.
+  - **Reasoning:** Recruiter scan surfaces stay immediately recognizable, while deeper system breadth remains progressive rather than crowding every card.
+  - **ADR:** Not required.
+
+### Validation
+
+- Manual review of all 13 supplied screenshots — Passed; selected three public-safe views and excluded the RBAC/login screens from rendering.
+- `npm test -- app/static-pages.test.tsx app/projects/projects.test.tsx` — Initial failure logged as ERR-20260827-01 and ERR-20260827-02; rerun passed, 2 files and 6 tests.
+- `npm run lint` — Passed.
+- `npm run typecheck` — Passed.
+- `npm test` — Passed; 5 files and 17 tests.
+- `npx next build --webpack` — Passed; all static routes and `/projects/ohmypos` generated with optimized static-image imports.
+- Browser QA at 390×844 and 1440×900 — Passed on Home, Projects, and OhMyPos detail; all images loaded when in view, captions remained legible, and no horizontal overflow occurred.
+- Primary-image loading check — Passed; rendered `loading="eager"`, secondary gallery images remained lazy, and the resolved LCP advisory did not recur in a clean validation tab.
+- Browser console — No application error or image warning after remediation; the known extension-owned error recurred.
+- `git diff --check` — Passed.
+
+### Current State
+
+The supplied OhMyPos visuals are integrated locally across the three recruiter-facing surfaces. The work remains uncommitted, unpushed, and undeployed.
+
+### Handoff Notes
+
+The repository folder is `docs/portfolio-screenshots/`, despite the `screenshoots` spelling in the user message. All 13 user-supplied files remain preserved; only three are imported into the public site. Do not expose `08-users-rbac.png` without confirming that its visible names and email addresses are safe for publication.
+
+### Open Threads
+
+- None for this screenshot integration. Phase 06 still owns the broader final QA pass.
+
+### Related Logs
+
+- **Errors:** ERR-20260827-01, ERR-20260827-02, ERR-20260827-03, ERR-20260826-17, ERR-20260826-11, ERR-20260825-11.
+- **Tech debt:** DEBT-20260826-03 (updated, resolved).
+
+## TASK-20260826-10 — Publish the Evidence-Bounded OhMyPos Case Study
+
+- **Timestamp:** 2026-08-26T21:59:21+07:00
+- **Status:** Complete
+- **Request:** Implement `docs/plannings/phase-05-populate-ohmypos.md`.
+- **Scope:** OhMyPos claim audit, project MDX and metadata, fixture publication state, placeholder guard, regression coverage, link checks, production build, responsive/accessibility QA, and continuity logs.
+
+### Summary
+
+Published OhMyPos as the portfolio's only public project case study using the exact Phase 01-approved hook, settlement metric, environment, method, limitations, and public destinations. The Phase 04 demonstration fixture is now draft-only, and published MDX fails validation when an unresolved `[...] REQUIRED` placeholder remains.
+
+### What Changed
+
+- Added `content/projects/ohmypos.mdx` with the mandatory seven sections, one qualified stat block, explicit concurrency trade-offs, evidence boundaries, limitations, and eight approved public links.
+- Added `docs/phase-05-claim-evidence-checklist.md` to map every published claim and field to the Phase 01 approval record and to document intentionally excluded draft claims.
+- Changed `content/projects/project-system-demo.mdx` from published to draft so `/projects` contains only the real OhMyPos entry.
+- Extended `lib/mdx.ts` to reject required placeholders in published content while continuing to permit them in drafts.
+- Updated loader and route tests for the OhMyPos index card, generated route, metadata, section structure, metric semantics, evidence links, draft filtering, and publication guard.
+
+### Key Decisions
+
+- **Decision:** Publish only the approved partial-settlement correctness result and omit all other metrics from the broader local case-study draft.
+  - **Reasoning:** Phase 05 permits only Phase 01-approved claims; report latency, suite totals, and other benchmark claims remain outside that approval boundary.
+  - **ADR:** Not required.
+- **Decision:** Demote the Phase 04 fixture to draft rather than delete it.
+  - **Reasoning:** This removes the temporary public entry while preserving a useful non-public contract fixture.
+  - **ADR:** Not required.
+- **Decision:** Enforce unresolved required placeholders in the shared loader.
+  - **Reasoning:** The publication gate should fail deterministically before a placeholder can reach the project index or static detail route.
+  - **ADR:** Not required.
+
+### Validation
+
+- Claim-to-evidence audit against `docs/phase-01-decision-packet.md` — Passed; no unapproved metric entered public copy.
+- Eight approved public destinations checked with followed HTTP requests — Passed; all returned HTTP 200, and the demo resolved to its public login entry point.
+- `npm test -- lib/mdx.test.tsx app/projects/projects.test.tsx` — Passed; 2 files, 10 tests.
+- `npm run lint` — Passed.
+- `npm run typecheck` — Passed.
+- `npm test` — Passed; 5 files, 17 tests.
+- `npx next build --webpack` — Passed; `/projects/ohmypos` was the only generated project detail route.
+- Browser QA at 390×844 and 1440×900 — Passed for `/projects` and `/projects/ohmypos`; exact section order, metadata title, metric, eight external links, no fixture or required placeholder, and no horizontal overflow.
+- Keyboard QA — Passed; the skip link was first in tab order, visible when focused, and rendered a 3px Technical Blue focus ring.
+- Browser console — No application error; the known extension error recurred, and a pre-existing Next.js smooth-scroll advisory was logged as DEBT-20260826-04.
+- `git diff --check` — Passed.
+
+### Current State
+
+OhMyPos is available locally at `/projects/ohmypos`, appears as the sole published project card, and is ready for Phase 06 QA. It remains uncommitted, unpushed, and undeployed.
+
+### Handoff Notes
+
+Do not widen the concurrency result into a performance or production-scale claim. The local `docs/ohmypos-case-study.md` contains additional figures that still require the Phase 01 approval process before publication. Keep `project-system-demo.mdx` draft-only unless a future test-specific replacement is introduced.
+
+### Open Threads
+
+- Phase 06 owns the broader accessibility, SEO, and final QA pass.
+- DEBT-20260826-04 may be addressed when shared layout behavior is next in scope.
+
+### Related Logs
+
+- **Errors:** ERR-20260826-19, ERR-20260826-20, ERR-20260826-21, ERR-20260826-11, ERR-20260826-01, ERR-20260825-11.
+- **Tech debt:** DEBT-20260826-01 (resolved), DEBT-20260826-04.
+
 ## TASK-20260826-09 — Branch Creation, Commit, and PR for Portfolio Redesign
 
 - **Timestamp:** 2026-08-26T14:06:00+07:00

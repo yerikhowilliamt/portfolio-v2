@@ -19,6 +19,7 @@ const REQUIRED_SECTION_TITLES = [
   "Technical Evidence",
 ] as const;
 const ALLOWED_MDX_COMPONENTS = new Set(["StatBlock"]);
+const PUBLISH_BLOCKING_PLACEHOLDER_PATTERN = /\[[^\]\n]*\bREQUIRED\]/i;
 
 const projectFrontmatterSchema = z.object({
   slug: z.string().regex(PROJECT_SLUG_PATTERN),
@@ -105,6 +106,13 @@ export async function compileProjectMdx(source: string, fileSlug = "inline"): Pr
       },
     });
     const frontmatter = projectFrontmatterSchema.parse(compiled.frontmatter);
+
+    if (
+      frontmatter.status === "published" &&
+      PUBLISH_BLOCKING_PLACEHOLDER_PATTERN.test(source)
+    ) {
+      throw new Error("Published project content cannot contain unresolved required placeholders");
+    }
 
     return {
       content: compiled.content,

@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { ProjectScreenshot } from "@/components/project-screenshot";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,11 +13,24 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { ProjectSummary } from "@/lib/mdx";
+import { getProjectVisuals } from "@/lib/project-visuals";
 
 export function ProjectCard({ project }: { project: ProjectSummary }) {
+  const visuals = getProjectVisuals(project.slug);
+
   return (
     <article>
       <Card>
+        {visuals ? (
+          <>
+            <ProjectScreenshot
+              visual={visuals.primary}
+              sizes="(min-width: 1280px) 1200px, 100vw"
+              presentation="embedded"
+            />
+            <Separator />
+          </>
+        ) : null}
         <div className="grid lg:grid-cols-[7fr_auto_5fr]">
           <CardHeader className="gap-5 lg:p-10">
             <div className="flex flex-wrap items-center gap-2">

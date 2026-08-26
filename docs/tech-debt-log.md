@@ -47,10 +47,49 @@ Resolution summary and validation evidence, or `Not resolved`.
 
 ## Entries
 
+## DEBT-20260826-04 — Root Layout Does Not Declare Smooth Scroll Behavior to Next.js
+
+- **First recorded:** 2026-08-26T21:59:21+07:00
+- **Last updated:** 2026-08-26T21:59:21+07:00
+- **Status:** Open
+- **Priority:** Low
+- **Area:** `app/layout.tsx` and global route-transition behavior.
+- **Introduced by:** Pre-existing
+
+### Description
+
+Browser QA reports Next.js's `missing-data-scroll-behavior` advisory because `app/globals.css` sets `scroll-behavior: smooth` on `html`, while the root `<html>` element does not declare `data-scroll-behavior="smooth"`.
+
+### Why It Exists or Was Deferred
+
+The behavior predates Phase 05. Changing the shared root layout is outside the content-population scope and was not necessary to validate the new project routes.
+
+### Impact and Risk
+
+Next.js may not disable smooth scrolling as intended during route transitions, and the advisory adds console noise during local QA. Reduced-motion CSS already overrides smooth scrolling for users who request it.
+
+### Recommended Remediation
+
+When shared layout behavior is next in scope, confirm the current Next.js guidance, add the supported declaration to the root `<html>` element, and rerun route-transition and reduced-motion checks.
+
+### Revisit Trigger
+
+Phase 06 QA, the next shared-layout change, or an observed route-transition scroll defect.
+
+### Resolution
+
+Not resolved; logged without changing out-of-scope shared behavior.
+
+### Related Logs
+
+- **Tasks:** TASK-20260826-10
+- **Errors:** None.
+- **ADR:** Not required.
+
 ## DEBT-20260826-03 — Frontend Did Not Implement the Recruiter-Oriented Design Proposal
 
 - **First recorded:** 2026-08-26T08:09:02+07:00
-- **Last updated:** 2026-08-26T08:38:24+07:00
+- **Last updated:** 2026-08-27T00:04:19+07:00
 - **Status:** Resolved
 - **Priority:** High
 - **Area:** Shared shell, Home, Projects, project detail, About, Contact, and authentic project visuals.
@@ -78,11 +117,11 @@ Satisfied on 2026-08-26 after the user approved the design, target role, and sha
 
 ### Resolution
 
-Resolved in TASK-20260826-08. Every existing public route now follows the approved Technical Editorial Dossier hierarchy; the shared header is 65px at both tested breakpoints, mobile navigation uses shadcn Sheet, all remaining visual/action primitives use shadcn composition, and the design passed lint, type-check, 16 tests, Webpack production build, and browser QA at 390×844 and 1440×900. Missing recruiter facts and project imagery remain intentionally omitted under the design's approved evidence-only fallback, not as implementation debt.
+Resolved in TASK-20260826-08. Every existing public route follows the approved Technical Editorial Dossier hierarchy; the shared header is 65px at both tested breakpoints, mobile navigation uses shadcn Sheet, and the design passed its implementation gates. TASK-20260827-01 subsequently replaced the approved project-visual fallback with user-supplied OhMyPos screenshots across Home, Projects, and project detail, with responsive and accessibility validation. Missing recruiter facts remain intentionally omitted rather than inferred.
 
 ### Related Logs
 
-- **Tasks:** TASK-20260825-06, TASK-20260826-06, TASK-20260826-07, TASK-20260826-08
+- **Tasks:** TASK-20260825-06, TASK-20260826-06, TASK-20260826-07, TASK-20260826-08, TASK-20260827-01
 - **Errors:** ERR-20260826-13, ERR-20260826-14, ERR-20260826-15, ERR-20260826-16, ERR-20260826-17, ERR-20260826-18.
 - **ADR:** Not required until implementation reveals a foundational architecture choice.
 
@@ -128,8 +167,8 @@ Resolved in TASK-20260826-02 after explicit approval. Official shadcn Card, Badg
 ## DEBT-20260826-01 — Public Project Index Uses a Temporary Implementation Fixture
 
 - **First recorded:** 2026-08-26T00:12:17+07:00
-- **Last updated:** 2026-08-26T00:12:17+07:00
-- **Status:** Planned
+- **Last updated:** 2026-08-26T21:59:21+07:00
+- **Status:** Resolved
 - **Priority:** Medium
 - **Area:** `content/projects/project-system-demo.mdx` and public project index content.
 - **Introduced by:** TASK-20260826-01
@@ -156,11 +195,11 @@ Start of Phase 05 or any request to publish the OhMyPos case study.
 
 ### Resolution
 
-Not resolved; intentionally scheduled for Phase 05.
+Resolved in TASK-20260826-10. OhMyPos is now the sole published project entry, the implementation fixture remains available as a draft-only content-contract fixture, and list/detail tests plus the production build verify the public replacement.
 
 ### Related Logs
 
-- **Tasks:** TASK-20260826-01
+- **Tasks:** TASK-20260826-01, TASK-20260826-10
 - **Errors:** None.
 - **ADR:** Not required.
 
