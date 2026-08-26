@@ -6,12 +6,17 @@ Dokumen ini adalah **single source of truth untuk keputusan produk, konten, info
 
 - `AGENTS.md` mengatur perilaku, scope, approval gate, validasi, dan keselamatan coding agent.
 - Dokumen ini mengatur apa yang dibangun dan alasan produknya.
+- `docs/DESIGN.md` adalah kontrak UI rinci yang disetujui pengguna pada 2026-08-26. Ia menjadi acuan implementasi visual tanpa mengubah keputusan produk dalam dokumen ini secara diam-diam.
 - Implementasi harus mengikuti keputusan yang tercatat di sini. Jika implementasi berbeda, jangan mengubah keputusan produk secara diam-diam; dokumentasikan perbedaannya dan minta persetujuan jika rekonsiliasi mengubah arsitektur atau perilaku publik.
 - Keputusan yang belum final harus tercatat secara eksplisit di bagian **Open Decisions**. Agent tidak boleh menebaknya.
 
 ## 1. Positioning dan Target Audience
 
-Portfolio ini ditujukan untuk menunjukkan kredibilitas teknis, dampak sistem yang dapat diverifikasi, dan kemampuan menjelaskan trade-off secara ringkas.
+**Public identity:** Yerikho William Tasilima.
+
+**Target role:** Software Engineer.
+
+Website ini adalah portfolio engineering pribadi Yerikho William Tasilima. Portfolio ini ditujukan untuk menunjukkan kredibilitas teknis, dampak sistem yang dapat diverifikasi, dan kemampuan menjelaskan trade-off secara ringkas agar relevan bagi proses rekrutmen perusahaan Eropa.
 
 **Primary audience:** Hiring manager dan technical recruiter di perusahaan Eropa yang memiliki rekam jejak sponsorship visa kerja, Blue Card, atau skilled-worker visa.
 
@@ -84,7 +89,7 @@ Setiap halaman `/projects/[slug]` mengikuti urutan berikut:
 | UI components | **shadcn/ui** | Primitive accessible yang dapat dikomposisikan tanpa ketergantungan pada visual library tertutup. |
 | Styling | **Tailwind CSS** | Menjaga konsistensi spacing, typography, responsive layout, dan dark-first theme melalui utility dan token terpusat. |
 | Case-study content | **MDX di `content/projects/*.mdx`** | Mempertahankan authoring berbasis Markdown sekaligus memungkinkan komponen seperti stat block dan code sample. |
-| Typography | **Geist Sans + monospace** | Geist untuk body/heading; monospace untuk angka, benchmark, tag teknis, dan kode. |
+| Typography | **Plus Jakarta Sans + JetBrains Mono** | Plus Jakarta Sans untuk body/heading; JetBrains Mono untuk angka, benchmark, tag teknis, dan kode. |
 | Hosting | **Vercel** | Integrasi native dengan Next.js dan deployment berbasis Git. |
 | Public language | **English only** | Selaras dengan target hiring team dan proses interview Eropa. |
 
@@ -110,7 +115,7 @@ Referensi karakter visual: produk developer tools seperti Linear, Vercel, dan Ra
 ## 6. Kontrak Implementasi
 
 - Target struktur menggunakan `app/`, `components/`, dan `content/projects/` sebagaimana ditetapkan di `AGENTS.md`.
-- Gunakan atau komposisikan shadcn/ui jika primitive-nya sesuai. Native semantic HTML tetap diperbolehkan.
+- Gunakan atau komposisikan shadcn/ui untuk setiap reusable visual/action primitive yang memiliki padanan sesuai; jangan membuat ulang card, badge, separator, alert, atau button dengan native styled markup. Native semantic HTML tetap digunakan untuk struktur dokumen dan inline content yang tidak memiliki padanan shadcn yang tepat.
 - Gunakan Tailwind utilities. `globals.css` hanya untuk token global, reset, dan aturan yang tidak wajar jika diekspresikan sebagai utility.
 - Simpan warna dan spacing dalam token terpusat; jangan menyebarkan nilai hard-coded berulang di komponen.
 - Prefer Server Components dan batasi `"use client"` pada boundary yang benar-benar memerlukan state, event handler, atau browser API.
@@ -163,3 +168,4 @@ Keputusan Phase 01 untuk accent, status CV, tautan publik OhMyPos, fallback hook
 - CV publik, email, LinkedIn, dan personal GitHub telah disetujui pada 2026-08-25. Tampilkan hanya destinasi persis yang tercatat di atas; route `/resume` tetap tidak disetujui.
 - Metric tambahan untuk OhMyPos atau project lain tetap memerlukan evidence contract dan persetujuan copy secara terpisah.
 - **Phase 02 selesai pada 2026-08-25.** Foundation Next.js, theme tokens, shadcn-compatible primitive, dan controlled MDX pipeline telah tervalidasi sebelum Phase 03 dimulai.
+- **Phase 04 selesai pada 2026-08-26.** `/projects`, static project detail, validated seven-section MDX contract, draft filtering, constrained components, dan reusable stat block telah tervalidasi. Konten publik masih berupa fixture transparan; Phase 05 tetap memiliki publikasi narrative OhMyPos.

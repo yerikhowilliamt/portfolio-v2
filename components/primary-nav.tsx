@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
-const navigation = [
+export const navigation = [
   { href: "/", label: "Home" },
   { href: "/projects", label: "Projects" },
   { href: "/about", label: "About" },
@@ -17,22 +17,21 @@ export function PrimaryNav() {
 
   return (
     <nav aria-label="Primary navigation">
-      <ul className="grid grid-cols-4 gap-1 sm:flex sm:items-center">
+      <ul className="flex items-center gap-1">
         {navigation.map(({ href, label }) => {
           const isActive = href === "/" ? pathname === href : pathname.startsWith(href);
 
           return (
             <li key={href}>
-              <Link
-                href={href}
-                aria-current={isActive ? "page" : undefined}
-                className={cn(
-                  "block rounded-md px-2 py-2 text-center text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:px-3 sm:text-sm",
-                  isActive && "bg-accent text-foreground",
-                )}
+              <Button
+                asChild
+                variant={isActive ? "secondary" : "ghost"}
+                size="sm"
               >
-                {label}
-              </Link>
+                <Link href={href} aria-current={isActive ? "page" : undefined}>
+                  {label}
+                </Link>
+              </Button>
             </li>
           );
         })}
