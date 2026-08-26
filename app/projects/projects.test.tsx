@@ -14,7 +14,7 @@ describe("Phase 04 project routes", () => {
     render(await ProjectsPage());
 
     expect(
-      screen.getByRole("heading", { level: 1, name: "Decisions, constraints, and proof." }),
+      screen.getByRole("heading", { level: 1, name: "Engineering decisions, constraints, and proof." }),
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Project System Demonstration" })).toHaveAttribute(
       "href",
@@ -51,6 +51,10 @@ describe("Phase 04 project routes", () => {
       "Limitations & Next Steps",
       "Technical Evidence",
     ]);
+    expect(headings.map((heading) => heading?.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""))).toEqual(
+      Array.from(container.querySelectorAll("h2"), (heading) => heading.id),
+    );
+    expect(screen.getByRole("navigation", { name: "Case study sections" })).toBeInTheDocument();
     expect(container.querySelector("dt")).toHaveTextContent("Evidence state");
     expect(container.querySelector("dt + dd")).toHaveTextContent("Fixture");
   });

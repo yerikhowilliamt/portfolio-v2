@@ -50,6 +50,294 @@ Non-obvious assumptions, fragile areas, manual steps, and what the next AI mode/
 
 ## Entries
 
+## TASK-20260826-09 — Branch Creation, Commit, and PR for Portfolio Redesign
+
+- **Timestamp:** 2026-08-26T14:06:00+07:00
+- **Status:** Complete
+- **Request:** Create and switch to a new branch for the current redesign phase, commit changes, and open a PR to dev.
+- **Scope:** Branch creation `feature/phase-04-redesign`, staging of implementation files, commit creation, push to remote origin, and PR creation targeting `dev`.
+
+### Summary
+
+Created branch `feature/phase-04-redesign` carrying all redesign changes from TASK-20260826-08, committed them under Conventional Commits convention, pushed to GitHub remote, and created a pull request to `dev`.
+
+### What Changed
+
+- Created and switched to Git branch `feature/phase-04-redesign`.
+- Committed all redesign components, routes, tests, theme adjustments, and log entries.
+- Pushed branch to remote `origin`.
+- Opened pull request targeting `dev`.
+
+### Key Decisions
+
+- **Decision:** Use branch name `feature/phase-04-redesign`.
+  - **Reasoning:** Clearly distinguishes the approved design overhaul from the initial phase-04 project system PR (#3).
+  - **ADR:** Not required.
+
+### Validation
+
+- `npm run lint` — Passed.
+- `npm run typecheck` — Passed.
+- `npm test` — Passed (5 test files, 16 tests).
+- `npx next build --webpack` — Passed (all routes statically generated).
+- `gh pr create` — Passed.
+
+### Current State
+
+Branch `feature/phase-04-redesign` is created, pushed, and PR is open against `dev`.
+
+### Handoff Notes
+
+Proceed to review or merge PR into `dev`, then continue to Phase 05 (`feature/phase-05-populate-ohmypos`).
+
+### Open Threads
+
+- None.
+
+### Related Logs
+
+- **Errors:** None.
+- **Tech debt:** None.
+
+## TASK-20260826-08 — Begin Approved Portfolio Redesign Implementation
+
+- **Timestamp:** 2026-08-26T08:38:24+07:00
+- **Status:** Complete
+- **Request:** Execute the approved portfolio redesign now, using `Software Engineer` as the target role.
+- **Scope:** Approved design contract, shared shell, mobile navigation, theme tokens, Home, Projects, project detail, About, Contact, 404, regression coverage, production build, responsive/accessibility QA, and continuity logs.
+
+### Summary
+
+Implemented the approved “Technical Editorial Dossier” across every existing public route. The portfolio now identifies Yerikho and the `Software Engineer` role before abstract positioning, leads with bounded OhMyPos evidence, uses a compact 65px shell with an accessible shadcn Sheet on mobile, and presents Projects, project detail, About, Contact, and 404 with a consistent recruiter-oriented editorial hierarchy.
+
+### What Changed
+
+- Added official shadcn `Sheet` source and composed `components/mobile-nav.tsx` with a labelled dialog, four route links, Resume action, Escape dismissal, focus trapping, and trigger-focus restoration.
+- Rebuilt the shared header/footer around Yerikho's full name, `Software Engineer` positioning, compact responsive navigation, and approved public destinations.
+- Rebuilt Home into identity, verified proof, selected OhMyPos work, three engineering capabilities, professional approach, and contact CTA sections.
+- Reworked the single-project index into one full-width editorial feature instead of a forced multi-card grid.
+- Added a sticky seven-section reading guide and anchor IDs to project detail while preserving the fixed MDX publishing contract.
+- Reframed About around professional ownership and system boundaries; reframed Contact around a primary email CTA with secondary professional channels.
+- Added a branded 404 surface and migrated remaining divider/link actions to shadcn `Separator` and `Button` composition.
+- Updated theme border tokens, preserved Plus Jakarta Sans for body/headings and JetBrains Mono for numeric/technical content, and retained reduced-motion safeguards.
+- Expanded regression assertions for the new hierarchy, shadcn primitives, public destinations, section anchors, and accessible names.
+
+### Key Decisions
+
+- **Decision:** Use official shadcn Sheet for the mobile menu and adapt its close control to a text label.
+  - **Reasoning:** The approved registry command created only the component source; removing its undeclared Lucide import avoided an unnecessary dependency while preserving the accessible Radix/shadcn behavior.
+  - **ADR:** Not required.
+- **Decision:** Omit unconfirmed recruiter facts and project visuals rather than infer them.
+  - **Reasoning:** Location, visa/relocation, availability, portrait, and approved OhMyPos visuals remain public-content decisions; the redesign supports intentional evidence-only fallback states.
+  - **ADR:** Not required.
+- **Decision:** Keep the transparent Phase 04 project-system fixture while featuring approved OhMyPos evidence on Home.
+  - **Reasoning:** Publishing the full OhMyPos MDX narrative belongs to Phase 05; redesign approval did not silently authorize replacing that content boundary.
+  - **ADR:** Not required.
+
+### Validation
+
+- `npx shadcn@latest add @shadcn/sheet` — Passed; created `components/ui/sheet.tsx` with no manifest, lockfile, or `components.json` change.
+- `npm run lint` — Passed.
+- `npm run typecheck` — Passed.
+- `npm test` — Passed; 5 files and 16 tests.
+- `npx next build --webpack` — Passed; all static routes, 404, and generated project detail prerendered successfully.
+- Browser QA at 390×844 and 1440×900 — Passed on Home, Projects, project detail, About, Contact, and 404; no horizontal overflow.
+- Typography/render metrics — Passed; Plus Jakarta Sans is the computed body/display font and JetBrains Mono is the computed metric font; H1 is 48px mobile and 84px desktop.
+- Mobile navigation interaction — Passed; four route links are present, Escape closes the Sheet, and focus returns to `Open navigation menu`.
+- Keyboard focus check — Passed; the skip link becomes visible and receives a 3px technical-blue focus ring.
+- Browser console — No application-origin warning or error; only the previously logged Chrome-extension-origin error recurred.
+
+### Current State
+
+The approved frontend redesign is implemented and validated across all existing public routes. Missing location, visa/relocation, availability, portrait, and authentic OhMyPos visual assets remain intentionally omitted rather than guessed. The project index still exposes the transparent Phase 04 fixture until the separately scoped Phase 05 content task.
+
+### Handoff Notes
+
+The default Turbopack production build remains incompatible with this managed environment's internal port restrictions; use `npx next build --webpack` for validated local production builds. Do not remove the fixture or publish a full OhMyPos MDX case study without executing the approved Phase 05 content contract.
+
+### Open Threads
+
+- Phase 05 replacement of the transparent project-system fixture with the evidence-approved OhMyPos case study.
+- Optional recruiter facts and authentic assets require exact user-supplied content before publication.
+
+### Related Logs
+
+- **Errors:** ERR-20260826-12, ERR-20260826-13, ERR-20260826-14, ERR-20260826-15, ERR-20260826-16, ERR-20260826-17, ERR-20260826-18.
+- **Tech debt:** DEBT-20260826-01, DEBT-20260826-03.
+
+## TASK-20260826-07 — Record Approval of the Portfolio Design Contract
+
+- **Timestamp:** 2026-08-26T08:14:25+07:00
+- **Status:** Complete
+- **Request:** Approve the proposed professional software engineer portfolio design.
+- **Scope:** Design-status record, project-brief authority update, redesign-debt status update, and next implementation gate.
+
+### Summary
+
+Recorded the user's approval of the “Technical Editorial Dossier” direction. `docs/DESIGN.md` is now the approved UI implementation contract, while its explicitly open personal-content and registry decisions remain gated rather than inferred.
+
+### What Changed
+
+- Changed `docs/DESIGN.md` from `Proposed` to `Approved` with the approval date.
+- Clarified that design approval does not supply missing personal facts or automatically authorize dependency/registry mutation.
+- Updated `docs/project-brief.md` to recognize the approved UI contract.
+- Updated DEBT-20260826-03 to record that design approval is satisfied while implementation remains pending required inputs.
+
+### Key Decisions
+
+- **Decision:** Treat the user's `approved` response as approval of the complete documented design direction.
+  - **Reasoning:** The response directly followed delivery of the proposal and satisfies its explicit design approval gate.
+  - **ADR:** Not required.
+- **Decision:** Preserve the separate gates for target role, personal/location/visa/availability copy, public visual assets, and shadcn registry mutation.
+  - **Reasoning:** Those decisions materially affect public claims or dependency state and were explicitly listed as separate confirmations.
+  - **ADR:** Not required.
+
+### Validation
+
+- `docs/DESIGN.md` status and authority text — Reviewed; approval date and boundary are explicit.
+- `docs/project-brief.md` authority text — Reviewed; design contract is recognized without displacing product authority.
+- `git diff --check` — Passed.
+- Lint, type-check, tests, build, and browser QA — Not run; this approval-record task changes documentation only.
+
+### Current State
+
+The design direction is approved and ready for phased implementation. Implementation has not started because the first public positioning decision—the exact target role title—must be supplied by the user.
+
+### Handoff Notes
+
+Resolve section 22 decisions one consequential question at a time. Begin with the exact target role, then continue with publishable recruiter facts and the component/asset approvals needed by each phase.
+
+### Open Threads
+
+- Exact target role title for the hero and recruiter-facing metadata.
+- Remaining `docs/DESIGN.md` section 22 decisions.
+
+### Related Logs
+
+- **Errors:** None.
+- **Tech debt:** DEBT-20260826-03.
+
+## TASK-20260826-06 — Define a Professional Software Engineer Portfolio Design System
+
+- **Timestamp:** 2026-08-26T08:09:02+07:00
+- **Status:** Complete
+- **Request:** Create `DESIGN.md` with `ui-ux-pro-max` because the current frontend does not yet look like a professional software engineer portfolio.
+- **Scope:** Current rendered-UI audit, design-system research, visual thesis, page hierarchy, shared shell, typography/color/grid contracts, shadcn composition, responsive behavior, accessibility, wireframes, anti-slop gate, implementation sequencing, project-brief authority note, and continuity logs.
+
+### Summary
+
+Created `docs/DESIGN.md` as a proposal for a recruiter-oriented “Technical Editorial Dossier.” The document explains the current UI gap with measured render evidence, then defines a personal and evidence-led layout for Home, Projects, project detail, About, Contact, shared navigation, responsive states, and visual QA. No frontend source was changed; implementation remains approval-gated.
+
+### What Changed
+
+- Added a 22-section design contract covering diagnosis, design thesis, design principles, tokens, typography, grid, imagery, route layouts, shadcn component mapping, interaction, responsive behavior, accessibility, evidence rules, required states, wireframes, anti-slop criteria, implementation phases, acceptance criteria, and open decisions.
+- Recorded the current render measurements: Home has two sections, one card, no project image/SVG; Projects has one fixture card and no visual; the 390px header is 149px high and the first Home section ends around y=881 on an 844px viewport.
+- Preserved approved decisions: dark-first near-black surfaces, technical blue accent, Plus Jakarta Sans, JetBrains Mono, English public copy, current routes, evidence boundaries, and shadcn-first visual/action primitives.
+- Rejected off-contract `ui-ux-pro-max` suggestions for a light palette and alternate fonts while adopting its relevant Minimal Swiss, editorial-grid, scanning, contrast, responsive, and reduced-motion guidance.
+- Added a project-brief authority note stating that `docs/DESIGN.md` is a detailed proposal and becomes an implementation reference only after user approval.
+
+### Key Decisions
+
+- **Decision:** Use “Technical Editorial Dossier” rather than a terminal/HUD or generic SaaS landing-page aesthetic.
+  - **Reasoning:** Recruiters need identity, role, ownership, proof, and case-study depth; decorative technical styling cannot substitute for authentic artifacts and evidence.
+  - **ADR:** Not required until implementation reveals a foundational architecture decision.
+- **Decision:** Design an intentional one-project state instead of forcing a two-column project grid.
+  - **Reasoning:** OhMyPos is the only planned real case study for the MVP; one strong feature is more credible than filler content or an empty-looking grid.
+  - **ADR:** Not required.
+- **Decision:** Keep the design document in `Proposed` status and make no frontend changes.
+  - **Reasoning:** The redesign is cross-cutting and still depends on explicit approval plus personal-content decisions that cannot be inferred.
+  - **ADR:** Not required.
+
+### Validation
+
+- `ui-ux-pro-max --design-system` — Completed for a software-engineer portfolio; Minimalism & Swiss Style and clear hierarchy were the applicable outputs.
+- Focused `ui-ux-pro-max` searches for landing, style, recruiter scanning, and Next.js — Completed; portfolio-grid, trust/authority, editorial-grid, consistent type hierarchy, responsive imagery, and accessibility guidance were evaluated.
+- Browser audit at 1440×900 and 390×844 — Completed; captured current section/card/image counts, header and hero dimensions, route titles, and horizontal-overflow state.
+- Current Home, About, Contact, Projects, project detail, project-card, stat-block, Phase 3, Phase 5, and project-brief contracts — Reviewed for implementation and evidence constraints.
+- `docs/DESIGN.md` heading/contract audit — Passed; status, shadcn rule, approved fonts/colors, responsive breakpoints, implementation gate, and open decisions are explicit.
+- Documentation claim review — Passed; measurements are from the current local render and personal/recruitment fields that lack evidence remain marked as required decisions rather than public copy.
+- Browser console — No application-origin warning or error; only the known extension-origin error from ERR-20260825-11 recurred.
+- `git diff --check` — Passed.
+- `git diff --no-index --check /dev/null docs/DESIGN.md` — No whitespace errors; exit 1 is expected because the new file differs from an empty source.
+- Lint, type-check, tests, and build — Not run; this task changes documentation only and intentionally does not implement the redesign.
+
+### Current State
+
+`docs/DESIGN.md` is complete as a reviewable proposal. The current frontend remains unchanged and therefore does not yet satisfy the new design acceptance criteria. Implementation must wait for explicit approval and the open personal-content decisions.
+
+### Handoff Notes
+
+Start any approved redesign from Phase A in `docs/DESIGN.md`, not by editing individual pages opportunistically. Resolve the exact target role, publishable location/relocation/visa/availability copy, authentic OhMyPos visual assets, and shadcn Sheet approval before the relevant implementation step.
+
+### Open Threads
+
+- User approval of the proposed design direction.
+- Eight explicit content/component decisions listed in `docs/DESIGN.md` section 22.
+- Phase 5 replacement of the project-system fixture with the approved OhMyPos case study.
+
+### Related Logs
+
+- **Errors:** ERR-20260826-09 (resolved), ERR-20260826-10 (workaround), ERR-20260826-11 (resolved), ERR-20260825-11.
+- **Tech debt:** DEBT-20260826-03.
+
+## TASK-20260826-05 — Replace Generic Portfolio Branding with Yerikho William Tasilima
+
+- **Timestamp:** 2026-08-26T01:04:52+07:00
+- **Status:** Complete
+- **Request:** Identify the website as Yerikho William Tasilima's personal portfolio for attracting recruiters at European companies, rather than as “Technical Portfolio.”
+- **Scope:** Shared header/footer identity, global metadata title and description, shell regression coverage, project positioning source of truth, responsive browser QA, and continuity logs.
+
+### Summary
+
+Replaced the remaining generic public identity with Yerikho William Tasilima. The header brand, footer copyright, default browser title, route-title template, and metadata description now consistently present the site as his evidence-led full-stack TypeScript portfolio for European hiring teams.
+
+### What Changed
+
+- Replaced `Systems / Work` in the shared header with `Yerikho William Tasilima` while preserving the home link and shadcn Button composition.
+- Replaced the generic footer copyright owner with `Yerikho William Tasilima` while preserving JetBrains Mono for the numeric year.
+- Changed the default metadata title to `Yerikho William Tasilima` and the page template to `%s | Yerikho William Tasilima`.
+- Reframed the metadata description around Yerikho's evidence-led full-stack TypeScript work and the intended European hiring audience.
+- Recorded the public identity and personal-portfolio positioning in `docs/project-brief.md`.
+- Added shared-shell regression assertions for the branded home link and copyright owner.
+
+### Key Decisions
+
+- **Decision:** Use the full legal/professional name as the site brand and metadata site name.
+  - **Reasoning:** Recruiters should identify the portfolio owner immediately; a generic product-like label obscures ownership and weakens the intended personal positioning.
+  - **ADR:** Not required.
+- **Decision:** Keep the public copy in English while documenting the product decision in Indonesian.
+  - **Reasoning:** The project contract targets European hiring teams and requires English public-facing content, while internal planning documents may use the user's language.
+  - **ADR:** Not required.
+
+### Validation
+
+- Identity source audit — Passed; no `Technical Portfolio`, `Systems / Work`, or uppercase equivalent remains in public application components or the current project brief.
+- `npm run lint` — Passed.
+- `npm run typecheck` — Passed.
+- `npm test` — Passed after correcting the nested copyright assertion; 5 files and 16 tests.
+- `npx next build --webpack` — Passed; all static routes and the generated project detail built successfully.
+- Browser checks at 390×844 and 1440×900 — Passed; full name renders in the header, footer ownership is correct, title templates resolve correctly, and no horizontal overflow occurs.
+- Desktop and mobile visual inspection — Passed; the longer brand remains readable and preserves navigation hierarchy.
+- Browser console — No application-origin warning or error; only the known extension-origin error from ERR-20260825-11 recurred.
+- `git diff --check` — Passed.
+
+### Current State
+
+The current portfolio is publicly identified as Yerikho William Tasilima's site across the shared UI and metadata. The user-facing positioning now explicitly serves European hiring teams without adding unsupported employment or sponsorship claims.
+
+### Handoff Notes
+
+Use `Yerikho William Tasilima` as the canonical public site name in future metadata, social previews, deployment configuration, and public assets. Do not reintroduce generic ownership labels such as `Technical Portfolio`.
+
+### Open Threads
+
+- Social/OG image branding remains part of the later SEO phase; no new asset was introduced here.
+
+### Related Logs
+
+- **Errors:** ERR-20260826-07 (resolved), ERR-20260826-08 (resolved), ERR-20260825-11.
+- **Tech debt:** None.
+
 ## TASK-20260826-04 — Switch Portfolio Typography to Plus Jakarta Sans and JetBrains Mono
 
 - **Timestamp:** 2026-08-26T00:54:57+07:00

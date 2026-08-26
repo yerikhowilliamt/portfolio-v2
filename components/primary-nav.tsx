@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 
-const navigation = [
+export const navigation = [
   { href: "/", label: "Home" },
   { href: "/projects", label: "Projects" },
   { href: "/about", label: "About" },
@@ -17,7 +17,7 @@ export function PrimaryNav() {
 
   return (
     <nav aria-label="Primary navigation">
-      <ul className="grid grid-cols-4 gap-1 sm:flex sm:items-center">
+      <ul className="flex items-center gap-1">
         {navigation.map(({ href, label }) => {
           const isActive = href === "/" ? pathname === href : pathname.startsWith(href);
 
@@ -27,7 +27,6 @@ export function PrimaryNav() {
                 asChild
                 variant={isActive ? "secondary" : "ghost"}
                 size="sm"
-                className="w-full sm:w-auto"
               >
                 <Link href={href} aria-current={isActive ? "page" : undefined}>
                   {label}

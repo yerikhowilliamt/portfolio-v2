@@ -46,6 +46,466 @@ Conditions under which the error could recur, or `None known`.
 
 ## Entries
 
+## ERR-20260826-18 — Browser QA Helpers Used Unsupported Syntax and Wait State
+
+- **Timestamp:** 2026-08-26T08:38:24+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260826-08
+- **Area:** Responsive browser validation commands.
+
+### What Happened
+
+The first responsive-metrics evaluator used a TypeScript non-null assertion in a JavaScript browser callback and stopped with `Expected ')'`. An earlier local-page wait also reported that `networkidle` is unsupported by the browser integration.
+
+### Reproduction
+
+1. Evaluate browser JavaScript containing `document.querySelector("dd")!`, or request the unsupported `networkidle` state.
+2. Observe the parser or wait-helper error before the intended assertion completes.
+
+### Root Cause
+
+The browser evaluator accepts JavaScript rather than TypeScript syntax, and this integration's load-state helper does not implement `networkidle` despite the general API type listing it.
+
+### Resolution or Workaround
+
+Replaced the non-null assertion with explicit null guards and used `domcontentloaded` plus direct DOM/screenshot assertions. Mobile and desktop QA then completed successfully.
+
+### Why This Approach
+
+Direct layout, DOM, and screenshot evidence is deterministic for this static site and avoids unsupported helpers.
+
+### Residual Risk
+
+Future browser scripts should remain plain JavaScript and avoid `networkidle` in this environment.
+
+### Related Files and Logs
+
+- **Files:** None.
+- **Tech debt:** None.
+
+## ERR-20260826-17 — Local Dev Server Port and Lock State Were Inconsistent
+
+- **Timestamp:** 2026-08-26T08:38:24+07:00
+- **Status:** Workaround
+- **Severity:** Low
+- **Task:** TASK-20260826-08
+- **Area:** Local browser QA server.
+
+### What Happened
+
+`npm run dev` first failed with `listen EPERM` in the sandbox. The network-enabled retry announced port 3001, then exited because an existing repository dev server held the Next.js lock. Browser navigation to 3001 returned `ERR_CONNECTION_REFUSED`, while the existing server remained available to the browser at port 3000.
+
+### Reproduction
+
+1. Start another local dev server while the repository's existing Next.js dev process and `.next/dev/lock` are present.
+2. Observe the sandbox bind error or the second process exit and refused port.
+
+### Root Cause
+
+The managed sandbox blocks port binding, and a pre-existing dev process already owned the repository dev lock. The second process's initial port message did not mean it remained alive.
+
+### Resolution or Workaround
+
+Preserved the existing process and used its browser-accessible `http://localhost:3000` endpoint. Browser QA completed without killing or replacing user-owned processes.
+
+### Why This Approach
+
+Reusing the existing server avoided a destructive process action and respected the dirty-worktree/process boundary.
+
+### Residual Risk
+
+Command-line curl from the restricted sandbox may not see the same local endpoint that the external browser can access.
+
+### Related Files and Logs
+
+- **Files:** `.next/dev/lock`, `.next/dev/logs/next-development.log`
+- **Tech debt:** None.
+
+## ERR-20260826-16 — Turbopack Build Could Not Bind Its Internal Process Port
+
+- **Timestamp:** 2026-08-26T08:38:24+07:00
+- **Status:** Workaround
+- **Severity:** Low
+- **Task:** TASK-20260826-08
+- **Area:** Production build validation.
+
+### What Happened
+
+After font access was allowed, `npm run build` still failed with `TurbopackInternalError: Failed to write app endpoint /page`, caused by `creating new process`, `binding to a port`, and `Operation not permitted (os error 1)`.
+
+### Reproduction
+
+1. Run the default Next.js 16 Turbopack production build in this managed environment.
+2. Observe the internal port-binding panic while transforming `app/globals.css`.
+
+### Root Cause
+
+The environment prevents Turbopack's internal CSS worker from binding the required local port; the failure is not an application compile or type error.
+
+### Resolution or Workaround
+
+Ran the repository's validated fallback, `npx next build --webpack`. The final build compiled, type-checked, and prerendered all seven static outputs successfully.
+
+### Why This Approach
+
+Webpack validates the same Next.js application output without the environment-specific Turbopack worker requirement.
+
+### Residual Risk
+
+Default `next build` may continue to fail in this managed environment until Turbopack can bind its internal port.
+
+### Related Files and Logs
+
+- **Files:** `app/globals.css`, `next.config.ts`
+- **Tech debt:** None.
+
+## ERR-20260826-15 — Sandboxed Build Could Not Fetch Google Fonts
+
+- **Timestamp:** 2026-08-26T08:38:24+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260826-08
+- **Area:** `next/font` production build.
+
+### What Happened
+
+The first `npm run build` failed because `next/font` could not fetch Plus Jakarta Sans and JetBrains Mono from `fonts.googleapis.com` inside the restricted sandbox.
+
+### Reproduction
+
+1. Run the production build without network access.
+2. Observe `Failed to fetch JetBrains Mono from Google Fonts` and the equivalent Plus Jakarta Sans error.
+
+### Root Cause
+
+The build-time Google Fonts requests require network access that the default sandbox blocks.
+
+### Resolution or Workaround
+
+Repeated production validation with approved network access. The final Webpack build fetched both fonts and completed successfully.
+
+### Why This Approach
+
+The user explicitly selected these fonts, and `next/font` remains the approved implementation; changing to unapproved local font assets would expand scope.
+
+### Residual Risk
+
+Offline builds will continue to require cached or local font files unless the project later approves self-hosting.
+
+### Related Files and Logs
+
+- **Files:** `app/layout.tsx`
+- **Tech debt:** None.
+
+## ERR-20260826-14 — Redesign Regression Assertions Retained Old Accessible Names
+
+- **Timestamp:** 2026-08-26T08:38:24+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260826-08
+- **Area:** Static-page, shell, and MDX regression tests.
+
+### What Happened
+
+Initial test runs failed because assertions still expected the old Contact `Email` label, the first footer paragraph to be copyright, or accessible names without the new “opens in a new tab” qualification.
+
+### Reproduction
+
+1. Run `npm test` after the intentional page hierarchy and accessible-name changes.
+2. Observe Testing Library failures in `app/static-pages.test.tsx`, `components/site-shell.test.tsx`, and `lib/mdx.test.tsx`.
+
+### Root Cause
+
+The UI behavior changed intentionally, but several assertions remained coupled to the previous presentation or exact accessible name.
+
+### Resolution or Workaround
+
+Updated assertions to verify the new recruiter hierarchy, semantic destinations, shadcn primitive counts, combined copyright text, and descriptive accessible names. The final suite passes all 16 tests.
+
+### Why This Approach
+
+The revised assertions test user-visible contracts without removing the accessibility improvements or numeric typography span.
+
+### Residual Risk
+
+None known.
+
+### Related Files and Logs
+
+- **Files:** `app/static-pages.test.tsx`, `components/site-shell.test.tsx`, `lib/mdx.test.tsx`
+- **Tech debt:** None.
+
+## ERR-20260826-13 — shadcn Sheet Requires Dependency-Mutation Approval
+
+- **Timestamp:** 2026-08-26T08:19:34+07:00
+- **Status:** Resolved
+- **Severity:** Medium
+- **Task:** TASK-20260826-08
+- **Area:** Compact mobile navigation implementation.
+
+### What Happened
+
+The approved redesign requires a compact mobile navigation panel. The official `npx shadcn@latest add @shadcn/sheet --dry-run` reports one new source file and a `radix-ui` dependency operation, so the mutating command cannot run under the current dependency approval boundary.
+
+### Reproduction
+
+1. Refresh shadcn project context and confirm Sheet is not installed.
+2. Run the official Sheet dry-run.
+3. Observe `components/ui/sheet.tsx` plus `radix-ui` under Dependencies.
+
+### Root Cause
+
+The shadcn registry item composes Radix dialog primitives and the CLI declares the umbrella `radix-ui` package even though it is already installed. Repository governance requires explicit approval for commands that may alter package or lockfile state.
+
+### Resolution or Workaround
+
+The user approved the exact registry mutation. `npx shadcn@latest add @shadcn/sheet` created `components/ui/sheet.tsx` and did not change `package.json`, `package-lock.json`, or `components.json`. The generated close action was adapted to use a text label so the project did not need an undeclared icon dependency.
+
+### Why This Approach
+
+Stopping preserves the dependency approval gate and avoids substituting a hand-built native overlay for the required shadcn primitive.
+
+### Residual Risk
+
+None known; manifest and lockfile diffs were explicitly checked and remained empty.
+
+### Related Files and Logs
+
+- **Files:** `components.json`, `package.json`, `package-lock.json`, `components/ui/sheet.tsx`
+- **Tech debt:** DEBT-20260826-03.
+
+## ERR-20260826-12 — Sandboxed shadcn Registry Lookup Could Not Resolve npm
+
+- **Timestamp:** 2026-08-26T08:19:34+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260826-08
+- **Area:** shadcn project and component inspection.
+
+### What Happened
+
+The first combined shadcn context/docs/dry-run command failed with `getaddrinfo ENOTFOUND registry.npmjs.org` inside the restricted sandbox.
+
+### Reproduction
+
+1. Run `npx shadcn@latest info --json` in the default sandbox.
+2. Observe npm registry DNS resolution fail.
+
+### Root Cause
+
+The managed sandbox blocks outbound registry access required by the shadcn CLI.
+
+### Resolution or Workaround
+
+Repeated the read-only registry calls with approved network access. Project context, documentation links, and Sheet dry-run output were retrieved successfully.
+
+### Why This Approach
+
+The official registry is the authoritative source for generated component and dependency impact.
+
+### Residual Risk
+
+Future shadcn registry calls in this environment may continue to require network-enabled execution.
+
+### Related Files and Logs
+
+- **Files:** `components.json`
+- **Tech debt:** None.
+
+## ERR-20260826-11 — Local Dev Server Rewrote next-env Type Paths
+
+- **Timestamp:** 2026-08-26T08:09:02+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260826-06
+- **Area:** Generated Next.js type declaration.
+
+### What Happened
+
+Final documentation diff inspection found `next-env.d.ts` changed from the repository's `.next/types/*` imports to `.next/dev/types/*` imports even though this task did not intentionally edit application configuration.
+
+### Reproduction
+
+1. Use the existing local Next.js development server for browser inspection.
+2. Inspect `git diff -- next-env.d.ts` and observe the generated dev-type paths.
+
+### Root Cause
+
+The running Next.js development environment regenerated `next-env.d.ts` for its dev type output.
+
+### Resolution or Workaround
+
+Restored the two generated import paths to the current repository version with a focused patch and verified that `next-env.d.ts` no longer appears in the final diff.
+
+### Why This Approach
+
+The generated change was unrelated to the requested design document and would add accidental noise to the task diff.
+
+### Residual Risk
+
+The development server may regenerate the dev paths during future local runs; final diff inspection should continue to catch it.
+
+### Related Files and Logs
+
+- **Files:** `next-env.d.ts`
+- **Tech debt:** None.
+
+## ERR-20260826-10 — Browser Audit Bindings Reset Across an Interrupted Run
+
+- **Timestamp:** 2026-08-26T08:09:02+07:00
+- **Status:** Workaround
+- **Severity:** Low
+- **Task:** TASK-20260826-06
+- **Area:** Local browser design audit session.
+
+### What Happened
+
+The first combined browser audit was aborted when a new user message arrived. The next attempt returned `browser is not defined`, and a later cleanup attempt returned `designAuditTab is not defined` because the transient browser-control context had reset between calls.
+
+### Reproduction
+
+1. Start a browser audit that is interrupted by new turn input.
+2. Reuse an in-memory browser or tab binding from the interrupted execution context.
+3. Observe that the binding is no longer defined.
+
+### Root Cause
+
+The interrupted browser-control execution did not preserve its transient bindings into the resumed context. The application and Chrome connection were not the source of the failure.
+
+### Resolution or Workaround
+
+Reinitialized the approved browser runtime, opened a fresh local audit tab, and completed the desktop/mobile measurements successfully. Agent-created audit tabs remain ephemeral and require no user-facing handoff.
+
+### Why This Approach
+
+Refreshing only the transient automation context avoided changing application state or relying on stale tab identifiers.
+
+### Residual Risk
+
+An interrupted browser audit may require a fresh binding on a subsequent call.
+
+### Related Files and Logs
+
+- **Files:** None.
+- **Tech debt:** None.
+
+## ERR-20260826-09 — Phase 5 Planning Filename Was Assumed Incorrectly
+
+- **Timestamp:** 2026-08-26T08:09:02+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260826-06
+- **Area:** Design-context file inspection.
+
+### What Happened
+
+The first context-read command targeted `docs/plannings/phase-05-ohmypos-case-study.md`, which does not exist, and `sed` returned `No such file or directory`.
+
+### Reproduction
+
+1. Attempt to read the assumed Phase 5 path.
+2. Observe the missing-file error.
+
+### Root Cause
+
+The actual repository filename is `docs/plannings/phase-05-populate-ohmypos.md`.
+
+### Resolution or Workaround
+
+Listed planning files with `rg --files`, located the correct Phase 5 document, and reviewed it before finalizing the design contract.
+
+### Why This Approach
+
+Repository file discovery is authoritative and prevents further assumptions about planning filenames.
+
+### Residual Risk
+
+None known.
+
+### Related Files and Logs
+
+- **Files:** `docs/plannings/phase-05-populate-ohmypos.md`, `docs/DESIGN.md`
+- **Tech debt:** None.
+
+## ERR-20260826-08 — Browser Evaluation Did Not Expose requestAnimationFrame
+
+- **Timestamp:** 2026-08-26T01:04:52+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260826-05
+- **Area:** Responsive browser validation command.
+
+### What Happened
+
+An attempted viewport-settle check stopped with `TypeError: requestAnimationFrame is not a function` inside the browser evaluation context.
+
+### Reproduction
+
+1. Set the validation viewport to 1440×900.
+2. Evaluate a promise that calls `requestAnimationFrame` through the scoped browser evaluator.
+3. Observe the missing-function error.
+
+### Root Cause
+
+The scoped evaluator used by this browser integration does not expose `requestAnimationFrame` as a callable global in this execution mode.
+
+### Resolution or Workaround
+
+Reloaded the route after setting the desktop viewport, then verified `innerWidth`, horizontal overflow, and the rendered screenshot directly. The page reported 1440px and rendered the expected desktop header.
+
+### Why This Approach
+
+An awaited route navigation provides a deterministic render boundary without relying on an unsupported timing helper.
+
+### Residual Risk
+
+Future browser scripts should avoid assuming every browser global is exposed by the scoped evaluator.
+
+### Related Files and Logs
+
+- **Files:** None.
+- **Tech debt:** None.
+
+## ERR-20260826-07 — Copyright Test Assumed Text Was a Single Node
+
+- **Timestamp:** 2026-08-26T01:04:52+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260826-05
+- **Area:** `components/site-shell.test.tsx`.
+
+### What Happened
+
+The first branding regression run failed because `getByText(/© 2026 Yerikho William Tasilima\./)` could not match copyright text split by the numeric `<span>`.
+
+### Reproduction
+
+1. Render `SiteFooter`.
+2. Query the complete copyright with `getByText` while the year is wrapped in a `font-mono` span.
+3. Observe Testing Library report that the text is broken across multiple elements.
+
+### Root Cause
+
+The assertion treated the copyright as one text node even though the deliberate typography composition splits it across the paragraph and numeric span.
+
+### Resolution or Workaround
+
+Asserted the complete accessible text content on the semantic footer paragraph. The corrected test passed with the full 16-test suite.
+
+### Why This Approach
+
+The paragraph's combined text content is the user-visible contract; removing the numeric span would regress the approved JetBrains Mono styling.
+
+### Residual Risk
+
+None known.
+
+### Related Files and Logs
+
+- **Files:** `components/site-footer.tsx`, `components/site-shell.test.tsx`
+- **Tech debt:** None.
+
 ## ERR-20260826-06 — Saved Browser Tab Was Stale During Typography QA
 
 - **Timestamp:** 2026-08-26T00:54:57+07:00
@@ -587,7 +1047,7 @@ The incompatibility is resolved. The compatible version's maintenance status rem
 - **Timestamp:** 2026-08-25T20:40:27+07:00
 - **Status:** Workaround
 - **Severity:** Low
-- **Task:** TASK-20260825-05, TASK-20260825-06, TASK-20260826-01, TASK-20260826-02, TASK-20260826-03, TASK-20260826-04
+- **Task:** TASK-20260825-05, TASK-20260825-06, TASK-20260826-01, TASK-20260826-02, TASK-20260826-03, TASK-20260826-04, TASK-20260826-05, TASK-20260826-06
 - **Area:** Browser console validation.
 
 ### What Happened
@@ -601,7 +1061,7 @@ Desktop and mobile browser checks captured `TypeError: Cannot read properties of
 
 ### Root Cause
 
-A Chrome extension content script failed independently of the localhost application. The error URL is extension-owned, and no application-origin warning or error was captured. It recurred across the Phase 04 project index, detail, 404, shadcn-refactor, full-site primitive-migration, and typography browser checks on 2026-08-26; every captured instance remained extension-owned.
+A Chrome extension content script failed independently of the localhost application. The error URL is extension-owned, and no application-origin warning or error was captured. It recurred across the Phase 04 project index, detail, 404, shadcn-refactor, full-site primitive-migration, typography, personal-branding, and design-audit browser checks on 2026-08-26; every captured instance remained extension-owned.
 
 ### Resolution or Workaround
 

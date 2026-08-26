@@ -19,11 +19,11 @@ const jetBrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Technical Portfolio",
-    template: "%s | Technical Portfolio",
+    default: "Yerikho William Tasilima",
+    template: "%s | Yerikho William Tasilima",
   },
   description:
-    "An evidence-led full-stack TypeScript portfolio focused on system correctness and explicit engineering trade-offs.",
+    "Yerikho William Tasilima's evidence-led full-stack TypeScript portfolio, presenting verifiable system outcomes and explicit engineering trade-offs for European hiring teams.",
 };
 
 export default function RootLayout({

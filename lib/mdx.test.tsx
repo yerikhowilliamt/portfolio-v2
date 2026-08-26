@@ -107,11 +107,11 @@ describe("project MDX content system", () => {
 
     render(project.content);
 
-    expect(screen.getByRole("link", { name: "Public evidence" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /Public evidence/ })).toHaveAttribute(
       "href",
       "https://example.com/evidence",
     );
-    expect(screen.getByRole("link", { name: "Public evidence" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /Public evidence/ })).toHaveAttribute(
       "rel",
       "noopener noreferrer",
     );

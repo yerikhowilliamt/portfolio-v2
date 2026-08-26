@@ -47,6 +47,45 @@ Resolution summary and validation evidence, or `Not resolved`.
 
 ## Entries
 
+## DEBT-20260826-03 — Frontend Did Not Implement the Recruiter-Oriented Design Proposal
+
+- **First recorded:** 2026-08-26T08:09:02+07:00
+- **Last updated:** 2026-08-26T08:38:24+07:00
+- **Status:** Resolved
+- **Priority:** High
+- **Area:** Shared shell, Home, Projects, project detail, About, Contact, and authentic project visuals.
+- **Introduced by:** TASK-20260825-06
+
+### Description
+
+Before TASK-20260826-08, the frontend satisfied the original Phase 3/4 contracts but did not implement the recruiter-oriented hierarchy in `docs/DESIGN.md`. Home had only two sections, its hero prioritized an abstract slogan over personal identity/role, mobile navigation consumed 149px, the one-project index used a generic grid card, and About/Contact remained structurally generic.
+
+### Why It Exists or Was Deferred
+
+The original implementation intentionally stayed within the earlier approved scope and available content. TASK-20260826-06 was explicitly a design-document task; implementing a cross-route redesign before the user approves its direction or supplies required personal/visual content would violate change-control and evidence rules.
+
+### Impact and Risk
+
+Recruiters may not identify Yerikho's role, ownership, strongest proof, and contact path quickly enough. The interface is functional and accessible but can read as a technical template instead of a memorable professional engineering portfolio.
+
+### Recommended Remediation
+
+Completed in TASK-20260826-08: compact the shell, rebuild the Home recruiter journey, create an intentional one-project presentation, refine project detail, About, Contact, and 404, use the approved metric-panel fallback in place of unapproved visual assets, and complete responsive/accessibility QA.
+
+### Revisit Trigger
+
+Satisfied on 2026-08-26 after the user approved the design, target role, and shadcn Sheet registry action.
+
+### Resolution
+
+Resolved in TASK-20260826-08. Every existing public route now follows the approved Technical Editorial Dossier hierarchy; the shared header is 65px at both tested breakpoints, mobile navigation uses shadcn Sheet, all remaining visual/action primitives use shadcn composition, and the design passed lint, type-check, 16 tests, Webpack production build, and browser QA at 390×844 and 1440×900. Missing recruiter facts and project imagery remain intentionally omitted under the design's approved evidence-only fallback, not as implementation debt.
+
+### Related Logs
+
+- **Tasks:** TASK-20260825-06, TASK-20260826-06, TASK-20260826-07, TASK-20260826-08
+- **Errors:** ERR-20260826-13, ERR-20260826-14, ERR-20260826-15, ERR-20260826-16, ERR-20260826-17, ERR-20260826-18.
+- **ADR:** Not required until implementation reveals a foundational architecture choice.
+
 ## DEBT-20260826-02 — Phase 04 Visual Primitives Are Not Yet shadcn-Composed
 
 - **First recorded:** 2026-08-26T00:20:54+07:00

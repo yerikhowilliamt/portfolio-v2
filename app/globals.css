@@ -23,8 +23,8 @@
   --accent-foreground: #fafafa;
   --destructive: #f87171;
   --destructive-foreground: #0a0a0a;
-  --border: #737373;
-  --input: #737373;
+  --border: #3f3f46;
+  --input: #3f3f46;
   --ring: #60a5fa;
 }
 
@@ -69,6 +69,16 @@
 
   body {
     @apply min-h-screen bg-background font-sans text-foreground antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 
   :focus-visible {

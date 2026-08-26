@@ -6,12 +6,17 @@ Dokumen ini adalah **single source of truth untuk keputusan produk, konten, info
 
 - `AGENTS.md` mengatur perilaku, scope, approval gate, validasi, dan keselamatan coding agent.
 - Dokumen ini mengatur apa yang dibangun dan alasan produknya.
+- `docs/DESIGN.md` adalah kontrak UI rinci yang disetujui pengguna pada 2026-08-26. Ia menjadi acuan implementasi visual tanpa mengubah keputusan produk dalam dokumen ini secara diam-diam.
 - Implementasi harus mengikuti keputusan yang tercatat di sini. Jika implementasi berbeda, jangan mengubah keputusan produk secara diam-diam; dokumentasikan perbedaannya dan minta persetujuan jika rekonsiliasi mengubah arsitektur atau perilaku publik.
 - Keputusan yang belum final harus tercatat secara eksplisit di bagian **Open Decisions**. Agent tidak boleh menebaknya.
 
 ## 1. Positioning dan Target Audience
 
-Portfolio ini ditujukan untuk menunjukkan kredibilitas teknis, dampak sistem yang dapat diverifikasi, dan kemampuan menjelaskan trade-off secara ringkas.
+**Public identity:** Yerikho William Tasilima.
+
+**Target role:** Software Engineer.
+
+Website ini adalah portfolio engineering pribadi Yerikho William Tasilima. Portfolio ini ditujukan untuk menunjukkan kredibilitas teknis, dampak sistem yang dapat diverifikasi, dan kemampuan menjelaskan trade-off secara ringkas agar relevan bagi proses rekrutmen perusahaan Eropa.
 
 **Primary audience:** Hiring manager dan technical recruiter di perusahaan Eropa yang memiliki rekam jejak sponsorship visa kerja, Blue Card, atau skilled-worker visa.
 
