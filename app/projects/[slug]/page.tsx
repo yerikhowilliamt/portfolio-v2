@@ -15,6 +15,7 @@ import {
   REQUIRED_SECTION_TITLES,
 } from "@/lib/mdx";
 import { getProjectVisuals } from "@/lib/project-visuals";
+import { createPageMetadata } from "@/lib/site-metadata";
 
 type ProjectPageProps = { params: Promise<{ slug: string }> };
 
@@ -26,8 +27,6 @@ export async function generateStaticParams() {
   const projects = await getPublishedProjects();
   return projects.map(({ slug }) => ({ slug }));
 }
-
-export const dynamicParams = false;
 
 async function resolveProject(slug: string) {
   try {
@@ -42,7 +41,11 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
   const { slug } = await params;
   const project = await resolveProject(slug);
   if (!project) notFound();
-  return { title: project.frontmatter.title, description: project.frontmatter.summary };
+  return createPageMetadata({
+    title: project.frontmatter.title,
+    description: project.frontmatter.summary,
+    path: `/projects/${project.frontmatter.slug}`,
+  });
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {

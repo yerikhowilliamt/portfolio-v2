@@ -4,6 +4,7 @@ import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
+import { getSiteUrl, SITE_DESCRIPTION, SITE_NAME, SITE_TITLE } from "@/lib/site-metadata";
 
 import "./globals.css";
 
@@ -18,12 +19,28 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: getSiteUrl(),
   title: {
-    default: "Yerikho William Tasilima",
-    template: "%s | Yerikho William Tasilima",
+    default: SITE_TITLE,
+    template: `%s | ${SITE_NAME}`,
   },
-  description:
-    "Yerikho William Tasilima's evidence-led full-stack TypeScript portfolio, presenting verifiable system outcomes and explicit engineering trade-offs for European hiring teams.",
+  description: SITE_DESCRIPTION,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: SITE_NAME,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
 };
 
 export default function RootLayout({
@@ -32,7 +49,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body className={`${plusJakartaSans.variable} ${jetBrainsMono.variable}`}>
         <Button asChild className="fixed top-4 left-4 z-50 -translate-y-24 focus:translate-y-0">
           <a href="#main-content">Skip to main content</a>

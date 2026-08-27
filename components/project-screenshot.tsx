@@ -29,8 +29,8 @@ export function ProjectScreenshot({
           width={visual.width}
           height={visual.height}
           sizes={sizes}
-          preload={priority}
           loading={priority ? "eager" : undefined}
+          fetchPriority={priority ? "high" : undefined}
           className="h-auto w-full"
         />
       </div>

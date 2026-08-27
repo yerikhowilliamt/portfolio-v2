@@ -27,6 +27,7 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
               visual={visuals.primary}
               sizes="(min-width: 1280px) 1200px, 100vw"
               presentation="embedded"
+              priority
             />
             <Separator />
           </>
@@ -63,7 +64,7 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
         <Separator />
         <CardFooter className="py-5">
           <Button asChild>
-            <Link href={`/projects/${project.slug}`} aria-label={`Read ${project.title} case study`}>
+            <Link href={`/projects/${project.slug}`}>
               Read case study <span aria-hidden="true">→</span>
             </Link>
           </Button>

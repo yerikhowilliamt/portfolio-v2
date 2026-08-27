@@ -1,5 +1,3 @@
-import type { Metadata } from "next";
-
 import { PageContainer } from "@/components/page-container";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,11 +10,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { createPageMetadata } from "@/lib/site-metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Contact",
-  description: "Public email, professional profiles, and resume for Yerikho William Tasilima.",
-};
+  description:
+    "Contact Yerikho William Tasilima for Software Engineer opportunities, technical interviews, or project discussions via email, LinkedIn, GitHub, or resume.",
+  path: "/contact",
+});
 
 const secondaryDestinations = [
   {
@@ -91,9 +92,9 @@ export default function ContactPage() {
                         href={destination.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label={`${destination.label} (opens in a new tab)`}
+                        aria-label={`Open ${destination.label} (opens in a new tab)`}
                       >
-                        Open <span aria-hidden="true">↗</span>
+                        Open {destination.label} <span aria-hidden="true">↗</span>
                       </a>
                     </Button>
                   </div>

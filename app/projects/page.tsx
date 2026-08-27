@@ -1,15 +1,16 @@
-import type { Metadata } from "next";
-
 import { PageContainer } from "@/components/page-container";
 import { ProjectCard } from "@/components/project-card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { getPublishedProjects } from "@/lib/mdx";
+import { createPageMetadata } from "@/lib/site-metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Projects",
-  description: "Evidence-led engineering case studies with explicit decisions and trade-offs.",
-};
+  description:
+    "Evidence-led engineering case studies by Yerikho William Tasilima, with system constraints, architecture decisions, verified outcomes, and technical proof.",
+  path: "/projects",
+});
 
 export default async function ProjectsPage() {
   const projects = await getPublishedProjects();

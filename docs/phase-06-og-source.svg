@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+  <title id="title">Yerikho William Tasilima — Software Engineer</title>
+  <desc id="description">Dark technical portfolio social card with blue accents and evidence-led full-stack systems positioning.</desc>
+  <defs>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#3f3f46" stroke-width="1" opacity="0.28" />
+    </pattern>
+    <linearGradient id="fade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#60a5fa" stop-opacity="0.18" />
+      <stop offset="0.52" stop-color="#60a5fa" stop-opacity="0.03" />
+      <stop offset="1" stop-color="#0a0a0a" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#0a0a0a" />
+  <rect width="1200" height="630" fill="url(#grid)" />
+  <rect width="1200" height="630" fill="url(#fade)" />
+  <rect x="72" y="64" width="1056" height="502" rx="24" fill="#0f0f0f" stroke="#3f3f46" stroke-width="2" />
+  <rect x="108" y="104" width="176" height="34" rx="17" fill="#60a5fa" />
+  <text x="196" y="127" fill="#0a0a0a" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="16" font-weight="700" text-anchor="middle" letter-spacing="2">PORTFOLIO</text>
+  <text x="108" y="232" fill="#fafafa" font-family="Arial, Helvetica, sans-serif" font-size="56" font-weight="700" letter-spacing="-2">Yerikho William Tasilima</text>
+  <text x="108" y="304" fill="#60a5fa" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="28" font-weight="600" letter-spacing="3">SOFTWARE ENGINEER</text>
+  <line x1="108" y1="354" x2="1092" y2="354" stroke="#3f3f46" stroke-width="2" />
+  <text x="108" y="424" fill="#fafafa" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="600">Evidence-led full-stack systems.</text>
+  <text x="108" y="476" fill="#a3a3a3" font-family="Arial, Helvetica, sans-serif" font-size="24">System constraints · engineering trade-offs · verified outcomes</text>
+  <circle cx="1068" cy="124" r="10" fill="#60a5fa" />
+</svg>

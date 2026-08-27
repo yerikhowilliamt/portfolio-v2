@@ -50,6 +50,73 @@ Non-obvious assumptions, fragile areas, manual steps, and what the next AI mode/
 
 ## Entries
 
+## TASK-20260827-02 — Complete Phase 06 QA, Accessibility, and SEO
+
+- **Timestamp:** 2026-08-27T18:27:14+07:00
+- **Status:** Complete
+- **Request:** Implement `docs/plannings/phase-06-qa-a11y-seo.md`.
+- **Scope:** Cross-site route/state QA, semantics, keyboard/focus, contrast, responsive behavior, reduced motion, route metadata, canonical origin resolution, robots, sitemap, static social-preview assets, link checks, production audit, regression tests, and pre-deploy documentation.
+
+### Summary
+
+Completed the pre-deploy Phase 06 sweep. Every approved public route now exposes complete canonical/Open Graph/Twitter metadata; robots, sitemap, and 1200×630 static OG/Twitter images are generated; the primary action contrast and two accessible-link patterns are corrected; the custom 404 has a semantic H1; and the smooth-scroll Next.js declaration is in place. The full local matrix passed except for explicitly deployment-bound checks and LinkedIn's automated crawler response.
+
+### What Changed
+
+- Added `lib/site-metadata.ts` to resolve the canonical origin from Vercel system URLs and build consistent per-route metadata without inventing a production domain.
+- Added `app/robots.ts`, `app/sitemap.ts`, static Open Graph/Twitter images and alt files, plus the deterministic SVG source.
+- Added canonical, Open Graph, and Twitter metadata to Home, Projects, About, Contact, and published project details.
+- Corrected primary button text contrast from 2.44:1 to 7.79:1, normalized link accessible names, and added the missing 404 H1.
+- Removed the `dynamicParams = false` override after production reproduction showed that Next.js logged `NoFallbackError` for unknown slugs; published routes remain SSG and invalid slugs return the custom 404 without a server error.
+- Replaced the old image preload/eager combination with explicit eager loading and high fetch priority for primary project images; secondary gallery images remain lazy.
+- Added Phase 06 metadata/discovery/image tests and expanded route regression coverage.
+- Added `docs/phase-06-pre-deploy-checklist.md` with the complete route matrix, results, audit boundaries, and Phase 07 gates.
+
+### Key Decisions
+
+- **Decision:** Resolve production metadata from `VERCEL_PROJECT_PRODUCTION_URL`, then `VERCEL_URL`, with localhost only as the local fallback.
+  - **Reasoning:** The Phase 07 origin is not approved yet; Vercel's built-in production URL provides an absolute origin without adding a custom environment variable or hard-coding an unverified domain.
+  - **ADR:** Not required.
+- **Decision:** Use deterministic SVG typography rasterized to static PNGs for social previews.
+  - **Reasoning:** Exact approved copy and 1200×630 layout are more reliable than a generated visual, while keeping runtime/font complexity out of the request path.
+  - **ADR:** Not required.
+- **Decision:** Leave security headers, privacy/legal routes, agent-specific endpoints, and copy expansion outside this implementation.
+  - **Reasoning:** Security/deployment controls and new routes require separate approval; generic word-count and agent heuristics conflict with the approved recruiter-scanning brief.
+  - **ADR:** Not required.
+
+### Validation
+
+- `npm run lint` — Passed.
+- `npm run typecheck` — Passed.
+- `npm test` — Passed; 6 files and 22 tests.
+- `npx next build --webpack` — Passed; 12 outputs generated, including robots, sitemap, static social images, and `/projects/ohmypos`.
+- Browser route matrix at 390×844, 1440×900, and 720×450 layout-zoom equivalent — Passed with no horizontal overflow, empty alt text, or broken images.
+- Keyboard QA — Passed for first-focus skip link, visible 3px focus treatment, mobile focus trap, Escape dismissal, and focus restoration.
+- Contrast check — Passed; default primary action is 7.79:1.
+- Squirrelscan production full crawl — Completed; overall 58, Core SEO 100, Accessibility 99, Images/Mobile/Social Media 100. Remaining score losses are documented deployment, scope, heuristic, or crawler-bound items.
+- Internal production route/MIME check — Passed; five public HTML routes 200, invalid slug 404, robots/sitemap/social images/CV served with intended MIME types.
+- External links — Six approved destinations returned HTTP 200; LinkedIn returned HTTP 999 to automated requests (ERR-20260827-09).
+- `git diff --check` — Passed.
+
+### Current State
+
+The repository is locally ready for Phase 07 deployment approval. No dependency, environment file, deployment configuration, security header, analytics, DNS, commit, push, or deployment change was made.
+
+### Handoff Notes
+
+After Vercel assigns the production origin, verify that canonical, OG image, robots host, and sitemap URLs use HTTPS and the intended domain, then run the full audit against that live URL. Local `next start` uses the intentional `http://localhost:3000` fallback, so audits from a different port report a sitemap-domain mismatch.
+
+### Open Threads
+
+- Phase 07 live-origin, HTTPS, caching, and deployment verification.
+- Security-header decision in DEBT-20260827-02 requires explicit approval.
+- Normal-browser verification of LinkedIn after deployment; automated HTTP clients currently receive 999.
+
+### Related Logs
+
+- **Errors:** ERR-20260827-04, ERR-20260827-05, ERR-20260827-06, ERR-20260827-07, ERR-20260827-08, ERR-20260827-09, ERR-20260827-10, ERR-20260827-11.
+- **Tech debt:** DEBT-20260826-04 (resolved), DEBT-20260827-01, DEBT-20260827-02.
+
 ## TASK-20260827-01 — Integrate User-Supplied OhMyPos Screenshots
 
 - **Timestamp:** 2026-08-27T00:04:19+07:00

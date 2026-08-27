@@ -47,11 +47,89 @@ Resolution summary and validation evidence, or `Not resolved`.
 
 ## Entries
 
+## DEBT-20260827-02 — Security Headers Need a Separately Approved Deployment Decision
+
+- **First recorded:** 2026-08-27T18:27:14+07:00
+- **Last updated:** 2026-08-27T18:27:14+07:00
+- **Status:** Open
+- **Priority:** Medium
+- **Area:** Next.js/Vercel response security headers.
+- **Introduced by:** Pre-existing
+
+### Description
+
+The production-local audit found no Content-Security-Policy or clickjacking protection header.
+
+### Why It Exists or Was Deferred
+
+`AGENTS.md` requires explicit approval before changing security controls, headers, or deployment configuration. Phase 06 authorizes QA but does not override that approval gate.
+
+### Impact and Risk
+
+Without an approved frame policy, the public pages may be embeddable by another origin. A CSP can also reduce script/style injection impact, but an incorrect policy could break Next.js, fonts, images, or future deployment behavior.
+
+### Recommended Remediation
+
+Approve and design the exact headers against the deployed Vercel application, then test navigation, fonts, images, social assets, and any required Next.js inline behavior before enforcement.
+
+### Revisit Trigger
+
+Phase 07 deployment preparation or any explicit security-header approval.
+
+### Resolution
+
+Not resolved; no security or deployment setting was changed.
+
+### Related Logs
+
+- **Tasks:** TASK-20260827-02
+- **Errors:** None.
+- **ADR:** Not required until the policy is approved and its trade-offs are known.
+
+## DEBT-20260827-01 — Live-Origin SEO and Transport QA Remain Pending
+
+- **First recorded:** 2026-08-27T18:27:14+07:00
+- **Last updated:** 2026-08-27T18:27:14+07:00
+- **Status:** Planned
+- **Priority:** Medium
+- **Area:** Canonical URLs, sitemap, robots, HTTPS, HTTP/2, caching, and social-preview URLs.
+- **Introduced by:** TASK-20260827-02
+
+### Description
+
+The canonical/discovery implementation is complete, but the production origin does not exist before the separately approved Phase 07 deployment. Local output therefore uses `http://localhost:3000`, and a production server audited on another local port reports an expected sitemap-domain mismatch.
+
+### Why It Exists or Was Deferred
+
+Deployment is explicitly outside Phase 06 and requires separate approval. The implementation uses Vercel's built-in production URL at build time rather than inventing or configuring a domain early.
+
+### Impact and Risk
+
+HTTPS, HTTP/2, cache headers, final absolute canonical URLs, and external social-preview fetches are not proven until a real deployment is available.
+
+### Recommended Remediation
+
+After Phase 07 deployment approval, verify the assigned Vercel origin in canonical, robots, sitemap, Open Graph, and Twitter tags, then run full HTTPS crawl and preview checks.
+
+### Revisit Trigger
+
+Immediately after the first Vercel deployment.
+
+### Resolution
+
+Not resolved; this is the explicit Phase 07 live verification gate.
+
+### Related Logs
+
+- **Tasks:** TASK-20260827-02
+- **Errors:** None.
+- **ADR:** Not required.
+
 ## DEBT-20260826-04 — Root Layout Does Not Declare Smooth Scroll Behavior to Next.js
 
 - **First recorded:** 2026-08-26T21:59:21+07:00
-- **Last updated:** 2026-08-26T21:59:21+07:00
-- **Status:** Open
+- **Last updated:** 2026-08-27T18:27:14+07:00
+- **Status:** Resolved
 - **Priority:** Low
 - **Area:** `app/layout.tsx` and global route-transition behavior.
 - **Introduced by:** Pre-existing
@@ -74,15 +152,15 @@ When shared layout behavior is next in scope, confirm the current Next.js guidan
 
 ### Revisit Trigger
 
-Phase 06 QA, the next shared-layout change, or an observed route-transition scroll defect.
+Satisfied during Phase 06 QA.
 
 ### Resolution
 
-Not resolved; logged without changing out-of-scope shared behavior.
+Resolved in TASK-20260827-02 by adding `data-scroll-behavior="smooth"` to the root `<html>` element while retaining the reduced-motion override. The browser console no longer emitted the Next.js advisory during the same-origin interaction pass.
 
 ### Related Logs
 
-- **Tasks:** TASK-20260826-10
+- **Tasks:** TASK-20260826-10, TASK-20260827-02
 - **Errors:** None.
 - **ADR:** Not required.
 

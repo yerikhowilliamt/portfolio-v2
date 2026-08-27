@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageContainer } from "@/components/page-container";
@@ -6,11 +5,14 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { createPageMetadata } from "@/lib/site-metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "About",
-  description: "How Yerikho William Tasilima approaches full-stack system correctness and evidence.",
-};
+  description:
+    "How Yerikho William Tasilima owns full-stack TypeScript systems from business rules and transaction boundaries to persistence, failure modes, and verification.",
+  path: "/about",
+});
 
 const focusAreas = [
   {

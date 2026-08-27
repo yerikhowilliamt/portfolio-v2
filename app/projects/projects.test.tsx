@@ -34,6 +34,12 @@ describe("Phase 04 project routes", () => {
     ).resolves.toMatchObject({
       title: "OhMyPos",
       description: expect.stringContaining("financial ledgers consistent"),
+      alternates: { canonical: "/projects/ohmypos" },
+      openGraph: {
+        title: "OhMyPos | Yerikho William Tasilima",
+        url: "/projects/ohmypos",
+      },
+      twitter: { card: "summary_large_image" },
     });
   });
 
