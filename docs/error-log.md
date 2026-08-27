@@ -46,6 +46,311 @@ Conditions under which the error could recur, or `None known`.
 
 ## Entries
 
+## ERR-20260827-11 — Sandbox Process Inspection Was Unavailable During Reproduction
+
+- **Timestamp:** 2026-08-27T18:45:13+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260827-02
+- **Area:** Production-server error reproduction workflow.
+
+### What Happened
+
+One asynchronous server-start attempt did not expose a listening process, the follow-up curl returned connection error 7, and a sandboxed `ps` diagnostic was denied with `operation not permitted`.
+
+### Reproduction
+
+1. Start the temporary production process through the yielded execution wrapper.
+2. Probe port 3106 before a listening session is available, then inspect the process inside the restricted sandbox.
+
+### Root Cause
+
+The yielded wrapper did not expose a usable PTY session, and the managed sandbox blocks process-table inspection.
+
+### Resolution or Workaround
+
+Terminated the yielded cell, started a normal approved PTY session, and completed the invalid-slug reproduction through its session handle.
+
+### Why This Approach
+
+The replacement used the existing approved server command and avoided changing application or system configuration.
+
+### Residual Risk
+
+None for application behavior; process-table inspection remains restricted in this environment.
+
+### Related Files and Logs
+
+- **Files:** None.
+- **Tech debt:** None.
+
+## ERR-20260827-10 — Invalid Static Slug Logged Next.js NoFallbackError
+
+- **Timestamp:** 2026-08-27T18:45:13+07:00
+- **Status:** Resolved
+- **Severity:** Medium
+- **Task:** TASK-20260827-02
+- **Area:** `app/projects/[slug]/page.tsx` production invalid-slug handling.
+
+### What Happened
+
+`/projects/not-a-project` returned the intended HTTP 404 and custom page, but `next start` logged `Error: Internal: NoFallbackError` for every request.
+
+### Reproduction
+
+1. Build with `dynamicParams = false` and start the production server.
+2. Request an unknown project slug.
+3. Observe HTTP 404 alongside the internal server error.
+
+### Root Cause
+
+Next.js 16.3.2 routed the unknown parameter through its no-fallback path before the application's existing lookup and `notFound()` handling.
+
+### Resolution or Workaround
+
+Removed the `dynamicParams = false` override. Published projects remain generated through `generateStaticParams`; unknown slugs now reach the validated lookup and `notFound()` path without logging an internal error.
+
+### Why This Approach
+
+The change preserves the public 404 contract and SSG output while avoiding a framework fallback path that emitted an application-visible server error.
+
+### Residual Risk
+
+Unknown slugs execute the lightweight project lookup before returning 404 instead of being rejected solely from the generated-param list.
+
+### Related Files and Logs
+
+- **Files:** `app/projects/[slug]/page.tsx`, `app/projects/projects.test.tsx`
+- **Tech debt:** None.
+
+## ERR-20260827-09 — LinkedIn Rejected Automated Link Validation
+
+- **Timestamp:** 2026-08-27T18:27:14+07:00
+- **Status:** Workaround
+- **Severity:** Low
+- **Task:** TASK-20260827-02
+- **Area:** Approved LinkedIn public destination.
+
+### What Happened
+
+Both squirrelscan and a followed `curl` GET received HTTP 999 from the approved LinkedIn profile while the other six checked external destinations returned HTTP 200.
+
+### Reproduction
+
+1. Request `https://www.linkedin.com/in/yerikhowilliamt` with an automated HTTP client.
+2. Observe HTTP 999.
+
+### Root Cause
+
+LinkedIn blocks or rate-limits automated clients with its non-standard 999 response; this is not evidence that the approved human-facing destination is absent.
+
+### Resolution or Workaround
+
+Kept the exact approved URL and recorded a normal-browser recheck as a Phase 07 gate.
+
+### Why This Approach
+
+Replacing a user-approved public profile because of crawler policy would create an unapproved destination change.
+
+### Residual Risk
+
+Automated link reports may continue to classify the profile as broken.
+
+### Related Files and Logs
+
+- **Files:** `docs/phase-01-decision-packet.md`, `docs/phase-06-pre-deploy-checklist.md`
+- **Tech debt:** None.
+
+## ERR-20260827-08 — Zsh Special Array Removed Curl from PATH
+
+- **Timestamp:** 2026-08-27T18:27:14+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260827-02
+- **Area:** Local production route verification command.
+
+### What Happened
+
+The first route-status loop returned `zsh: command not found: curl` for every request.
+
+### Reproduction
+
+1. Assign a zsh array named `paths`.
+2. Run `curl` in the same shell and observe that the special `path`/`PATH` binding has been replaced.
+
+### Root Cause
+
+`paths` is case-insensitively tied to zsh's special `path` array, which controls executable lookup.
+
+### Resolution or Workaround
+
+Renamed the array to `route_list` and used `/usr/bin/curl`; all intended route checks then completed.
+
+### Why This Approach
+
+The rerun avoided shell-global option names and did not require any source change.
+
+### Residual Risk
+
+None known if task-specific variable names are used.
+
+### Related Files and Logs
+
+- **Files:** `docs/phase-06-pre-deploy-checklist.md`
+- **Tech debt:** None.
+
+## ERR-20260827-07 — Dev-Origin Mismatch Prevented Client Hydration
+
+- **Timestamp:** 2026-08-27T18:27:14+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260827-02
+- **Area:** Mobile browser interaction QA.
+
+### What Happened
+
+The server-rendered mobile page loaded at `127.0.0.1`, but clicking Menu did not open the Sheet because Next.js blocked dev chunks whose allowed origin was `localhost`.
+
+### Reproduction
+
+1. Open the existing `localhost:3000` dev server through `http://127.0.0.1:3000`.
+2. Observe cross-origin dev-resource warnings and an unhydrated Menu button.
+
+### Root Cause
+
+The hostname differed from the active dev server origin, and Next.js development origin protection blocked client resources.
+
+### Resolution or Workaround
+
+Repeated interactive QA at `http://localhost:3000`; the Sheet then opened, trapped focus, closed with Escape, and restored focus with no application errors.
+
+### Why This Approach
+
+Using the existing server's correct origin avoided an unnecessary `allowedDevOrigins` configuration change.
+
+### Residual Risk
+
+None for normal same-origin development or production use.
+
+### Related Files and Logs
+
+- **Files:** `components/mobile-nav.tsx`
+- **Tech debt:** None.
+
+## ERR-20260827-06 — Sips Could Not Rasterize the OG SVG
+
+- **Timestamp:** 2026-08-27T18:27:14+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260827-02
+- **Area:** Static social-preview asset generation.
+
+### What Happened
+
+`sips -s format png docs/phase-06-og-source.svg` failed with `Cannot extract image from file` and error 13.
+
+### Reproduction
+
+1. Ask the installed macOS `sips` binary to convert the Phase 06 SVG to PNG.
+2. Observe the unsupported-input failure.
+
+### Root Cause
+
+This `sips` build does not decode SVG input.
+
+### Resolution or Workaround
+
+Used the already-installed Next.js transitive `sharp` renderer to create the 1200×630 PNG, copied it for Twitter, and verified dimensions, format, file size, and rendered appearance.
+
+### Why This Approach
+
+The workaround required no dependency or manifest change and preserved the deterministic SVG source.
+
+### Residual Risk
+
+Regeneration depends on the renderer currently supplied with the installed Next.js dependency tree.
+
+### Related Files and Logs
+
+- **Files:** `docs/phase-06-og-source.svg`, `app/opengraph-image.png`, `app/twitter-image.png`
+- **Tech debt:** None.
+
+## ERR-20260827-05 — Baseline Audit Targeted an Inactive Port
+
+- **Timestamp:** 2026-08-27T18:27:14+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260827-02
+- **Area:** Baseline squirrelscan execution.
+
+### What Happened
+
+Two audit attempts against port 3106 reported that the site could not be reached.
+
+### Reproduction
+
+1. Attempt to start a second dev server on port 3106 while another portfolio dev server owns the build lock.
+2. Audit the inactive port and observe the connection failure.
+
+### Root Cause
+
+The second server exited after identifying the existing portfolio dev server at port 3000.
+
+### Resolution or Workaround
+
+Verified the existing server and ran the baseline audit against port 3000; the final audit used a separately started production server after the build.
+
+### Why This Approach
+
+Reusing the valid server preserved the user's running process and avoided killing unrelated work.
+
+### Residual Risk
+
+Always verify the active URL before starting an audit.
+
+### Related Files and Logs
+
+- **Files:** `.next/dev/logs/next-development.log`
+- **Tech debt:** None.
+
+## ERR-20260827-04 — Sandbox Blocked the Initial Dev Server Bind
+
+- **Timestamp:** 2026-08-27T18:27:14+07:00
+- **Status:** Resolved
+- **Severity:** Low
+- **Task:** TASK-20260827-02
+- **Area:** Local browser QA server startup.
+
+### What Happened
+
+The first `next dev` attempt failed with `listen EPERM: operation not permitted 127.0.0.1:3106`.
+
+### Reproduction
+
+1. Start the local dev server inside the restricted sandbox.
+2. Observe the port-bind denial.
+
+### Root Cause
+
+The managed sandbox does not allow local port binding without elevated execution.
+
+### Resolution or Workaround
+
+Retried with the required permission, then reused the already-running portfolio dev server identified by Next.js.
+
+### Why This Approach
+
+The retry followed the environment's port-binding boundary without changing application configuration.
+
+### Residual Risk
+
+Future browser QA in the same managed environment may require the same permission.
+
+### Related Files and Logs
+
+- **Files:** None.
+- **Tech debt:** None.
+
 ## ERR-20260827-03 — Primary Screenshot Triggered a Next Image LCP Advisory
 
 - **Timestamp:** 2026-08-27T00:04:19+07:00
@@ -69,15 +374,15 @@ The screenshot composition passed the deprecated `priority` prop, which preloade
 
 ### Resolution or Workaround
 
-Mapped the composition's priority state to Next.js 16's `preload` prop and `loading="eager"`. A clean browser tab then rendered the image eagerly with no application image warning; secondary gallery images remained lazy.
+TASK-20260827-01 initially mapped the composition to `preload` plus eager loading. TASK-20260827-02 aligned the final state with the current Next.js 16 guidance by emitting `loading="eager"` and `fetchPriority="high"` for primary images; production HTML contains both attributes, while secondary gallery images remain lazy.
 
 ### Why This Approach
 
-Only the above-the-fold image receives eager loading, preserving lazy loading for secondary visual evidence while following the installed framework API.
+Only the primary image on each recruiter-facing project surface receives eager/high-priority loading, preserving lazy loading for secondary visual evidence while following the installed framework API.
 
 ### Residual Risk
 
-None known.
+Squirrelscan 0.0.87 did not recognize the production HTML's camel-cased `fetchPriority="high"` serialization and continued to report a missing hint; direct markup inspection confirmed the attribute is present.
 
 ### Related Files and Logs
 

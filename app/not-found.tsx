@@ -12,7 +12,9 @@ export default function NotFound() {
         <Card className="w-full">
           <CardHeader className="max-w-3xl gap-5 sm:p-10">
             <Badge variant="technical" className="w-fit">404 / route not found</Badge>
-            <CardTitle className="text-4xl sm:text-6xl">This page is outside the published system.</CardTitle>
+            <CardTitle>
+              <h1 className="text-4xl sm:text-6xl">This page is outside the published system.</h1>
+            </CardTitle>
             <CardDescription className="text-base leading-7">
               The destination may have moved, or it is not part of the public portfolio.
             </CardDescription>

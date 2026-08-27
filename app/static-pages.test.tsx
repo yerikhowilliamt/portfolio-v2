@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import AboutPage from "@/app/about/page";
 import ContactPage from "@/app/contact/page";
+import NotFound from "@/app/not-found";
 import Home from "@/app/page";
 
 afterEach(cleanup);
@@ -47,20 +48,31 @@ describe("redesigned static routes", () => {
       "href",
       "mailto:yerikhowilliamt@gmail.com",
     );
-    expect(screen.getByRole("link", { name: /LinkedIn/ })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Open LinkedIn (opens in a new tab)" })).toHaveAttribute(
       "href",
       "https://www.linkedin.com/in/yerikhowilliamt",
     );
-    expect(screen.getByRole("link", { name: /GitHub/ })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Open GitHub (opens in a new tab)" })).toHaveAttribute(
       "href",
       "https://github.com/yerikhowilliamt",
     );
-    expect(screen.getByRole("link", { name: /Resume/ })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Open Resume (opens in a new tab)" })).toHaveAttribute(
       "href",
       "/CV_YERIKHO_WILLIAM_TASILIMA_public.pdf",
     );
     expect(container.querySelectorAll('[data-slot="card"]')).toHaveLength(1);
     expect(container.querySelectorAll('[data-slot="badge"]')).toHaveLength(1);
     expect(container.querySelectorAll('[data-slot="button"]')).toHaveLength(4);
+  });
+
+  it("renders the not-found state with a semantic heading", () => {
+    render(<NotFound />);
+
+    expect(
+      screen.getByRole("heading", {
+        level: 1,
+        name: "This page is outside the published system.",
+      }),
+    ).toBeInTheDocument();
   });
 });
